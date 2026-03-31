@@ -1,0 +1,371 @@
+/* ==========================================
+   월촌캠핑장 - 공통 스타일
+   ========================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+:root {
+    --primary: #2d5a27;
+    --primary-light: #4a8a3f;
+    --primary-dark: #1a3a16;
+    --accent: #f4a425;
+    --bg: #f8f6f1;
+    --white: #ffffff;
+    --gray-light: #f0ede6;
+    --gray: #999;
+    --text: #2c2c2c;
+    --text-light: #666;
+    --header-height: 130px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+a { text-decoration: none; color: inherit; }
+ul, ol { list-style: none; }
+img { max-width: 100%; display: block; }
+
+.wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 30px;
+}
+
+/* ==========================================
+   헤더
+   ========================================== */
+#header {
+    background: var(--white);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+}
+
+/* 상단 바 */
+#lnb {
+    background: var(--primary-dark);
+    padding: 7px 0;
+}
+#lnb .wrap {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+}
+#lnb a {
+    color: rgba(255,255,255,0.8);
+    font-size: 12px;
+    transition: color 0.2s;
+}
+#lnb a:hover { color: var(--accent); }
+
+/* 로고 + 메뉴 */
+#gnb {
+    padding: 18px 0;
+    border-bottom: 1px solid #eee;
+}
+#gnb .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo a {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--primary);
+    letter-spacing: -0.5px;
+}
+.logo span { color: var(--accent); }
+
+/* 네비게이션 */
+#main-nav > ul {
+    display: flex;
+    gap: 5px;
+}
+#main-nav > ul > li {
+    position: relative;
+}
+#main-nav > ul > li > a {
+    display: block;
+    padding: 10px 18px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+#main-nav > ul > li > a:hover,
+#main-nav > ul > li.active > a {
+    background: var(--primary);
+    color: var(--white);
+}
+
+/* 드롭다운 */
+.dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--white);
+    min-width: 200px;
+    border-radius: 8px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    overflow: hidden;
+    z-index: 100;
+}
+#main-nav > ul > li:hover .dropdown { display: block; }
+.dropdown li a {
+    display: block;
+    padding: 11px 20px;
+    font-size: 14px;
+    color: var(--text-light);
+    border-bottom: 1px solid #f5f5f5;
+    transition: all 0.2s;
+}
+.dropdown li:last-child a { border-bottom: none; }
+.dropdown li a:hover {
+    background: var(--gray-light);
+    color: var(--primary);
+    padding-left: 25px;
+}
+
+/* 모바일 햄버거 */
+#btn-menu {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 5px;
+}
+#btn-menu span {
+    display: block;
+    width: 25px;
+    height: 2px;
+    background: var(--text);
+    transition: all 0.3s;
+}
+
+/* ==========================================
+   페이지 공통 비주얼 (서브페이지용)
+   ========================================== */
+.page-visual {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+    padding: 70px 0;
+    text-align: center;
+    color: var(--white);
+    position: relative;
+    overflow: hidden;
+}
+.page-visual::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.page-visual h2 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    position: relative;
+}
+.page-visual p {
+    font-size: 15px;
+    opacity: 0.8;
+    position: relative;
+}
+
+/* 브레드크럼 */
+.breadcrumb {
+    background: var(--white);
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 13px;
+    color: var(--gray);
+}
+.breadcrumb a { color: var(--gray); }
+.breadcrumb a:hover { color: var(--primary); }
+.breadcrumb span { margin: 0 8px; }
+
+/* ==========================================
+   섹션 공통
+   ========================================== */
+.section {
+    padding: 80px 0;
+}
+.section-title {
+    text-align: center;
+    margin-bottom: 50px;
+}
+.section-title h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+.section-title p {
+    color: var(--text-light);
+    font-size: 15px;
+}
+.section-title .line {
+    width: 50px;
+    height: 3px;
+    background: var(--accent);
+    margin: 12px auto 0;
+    border-radius: 2px;
+}
+
+/* ==========================================
+   버튼
+   ========================================== */
+.btn {
+    display: inline-block;
+    padding: 12px 28px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+.btn-primary {
+    background: var(--primary);
+    color: var(--white);
+}
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+}
+.btn-outline:hover {
+    background: var(--primary);
+    color: var(--white);
+}
+.btn-accent {
+    background: var(--accent);
+    color: var(--white);
+}
+.btn-accent:hover {
+    background: #e09520;
+    transform: translateY(-1px);
+}
+
+/* ==========================================
+   게시판 공통
+   ========================================== */
+.board-list { width: 100%; border-collapse: collapse; }
+.board-list thead th {
+    background: var(--primary);
+    color: var(--white);
+    padding: 14px;
+    font-size: 14px;
+    font-weight: 500;
+}
+.board-list tbody td {
+    padding: 14px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    color: var(--text-light);
+    text-align: center;
+}
+.board-list tbody tr:hover td { background: var(--gray-light); }
+.board-list .title { text-align: left; color: var(--text); }
+.board-list .title a:hover { color: var(--primary); }
+
+/* ==========================================
+   푸터
+   ========================================== */
+#footer {
+    background: var(--primary-dark);
+    color: rgba(255,255,255,0.7);
+    padding: 50px 0 30px;
+}
+#footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.footer-logo {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 12px;
+}
+.footer-logo span { color: var(--accent); }
+.footer-info p {
+    font-size: 13px;
+    line-height: 2;
+}
+.footer-contact h4 {
+    color: var(--white);
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+.footer-contact .phone {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 5px;
+}
+.footer-contact p { font-size: 13px; }
+#footer-bottom {
+    text-align: center;
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+}
+
+/* ==========================================
+   반응형 - 모바일
+   ========================================== */
+@media (max-width: 900px) {
+    :root { --header-height: 60px; }
+
+    #lnb { display: none; }
+
+    #btn-menu { display: flex; }
+
+    #main-nav {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: var(--white);
+        z-index: 999;
+        padding: 80px 30px 30px;
+        overflow-y: auto;
+    }
+    #main-nav.open { display: block; }
+    #main-nav > ul { flex-direction: column; gap: 0; }
+    #main-nav > ul > li > a {
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+        border-radius: 0;
+        font-size: 16px;
+    }
+    .dropdown {
+        display: block;
+        position: static;
+        box-shadow: none;
+        border-radius: 0;
+        background: var(--gray-light);
+        margin-top: 5px;
+    }
+
+    #footer-top { flex-direction: column; gap: 25px; }
+    .wrap { padding: 0 20px; }
+}
