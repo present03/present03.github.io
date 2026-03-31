@@ -329,7 +329,10 @@ img { max-width: 100%; display: block; }
     font-size: 12px;
     color: rgba(255,255,255,0.4);
 }
-
+/* ==========================================
+   공통 - 모바일 숨김 요소
+   ========================================== */
+#btn-menu-close { display: none; }
 /* ==========================================
    반응형 - 모바일
    ========================================== */
@@ -350,6 +353,17 @@ img { max-width: 100%; display: block; }
         overflow-y: auto;
     }
     #main-nav.open { display: block; }
+    /* 모바일 메뉴 스타일 */
+    #main-nav.open #btn-menu-close {
+        display: block;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+    }
     #main-nav > ul { flex-direction: column; gap: 0; }
     #main-nav > ul > li > a {
         padding: 15px 0;
