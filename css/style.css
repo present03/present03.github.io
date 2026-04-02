@@ -423,6 +423,19 @@ input:focus, select:focus, textarea:focus {
     outline: none;
 }
 
+/* [추가] 인라인 달력 중앙 정렬 및 디자인 */
+.flatpickr-calendar.inline {
+    margin: 0 auto;             /* 가로 중앙 정렬 */
+    box-shadow: none;           /* 카드 안에 있으므로 그림자 제거 */
+    border: 1px solid #eee;
+    border-radius: 12px;
+}
+
+/* 달력 내부 너비 조정 (필요시) */
+.flatpickr-innerContainer {
+    width: 100%;
+}
+
 /* --- 3. 캠핑장 지도 SVG 커스텀 섹션  --- */
 
 /* [색상 변경 가능] 지도 구역 이름(텍스트) */

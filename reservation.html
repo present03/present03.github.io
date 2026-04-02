@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,57 +10,58 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
 </head>
+
 <body>
 
     <header id="header">
-    <div id="gnb">
-        <div class="wrap">
-            <div class="logo">
-                <a href="index.html">🏕️ 월촌<span>캠핑장</span></a>
-            </div>
-            <nav id="main-nav">
-                <button id="btn-menu-close">✕</button>
-                <ul>
-                    <li>
-                        <a href="introduce.html">캠핑장 소개</a>
-                        <ul class="dropdown">
-                            <li><a href="introduce.html">인사말</a></li>
-                            <li><a href="rules.html">이용 수칙</a></li>
-                            <li><a href="map.html">오시는 길</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="facility.html">캠핑장 둘러보기</a>
-                        <ul class="dropdown">
-                            <li><a href="facility.html">시설 안내</a></li>
-                            <li><a href="sites.html">구역별 자리 안내</a></li>
-                            <li><a href="news.html">월촌의 소식('가칭')</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="rates.html">캠핑장 예약</a>
-                        <ul class="dropdown">
-                            <li><a href="rates.html">예약 / 요금 안내</a></li>
-                            <li><a href="reservation.html">실시간 예약</a></li>
-                            <li><a href="confirm.html">예약 확인 / 취소</a></li>
-                            <li><a href="refund.html">환불규정 / 유의사항</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="notice.html">커뮤니티</a>
-                        <ul class="dropdown">
-                            <li><a href="notice.html">공지사항</a></li>
-                            <li><a href="faq.html">자주 묻는 질문</a></li>
-                            <!-- <li><a href="contact.html">문의하기</a></li> -->
-                        </ul>
-                    </li>
-                </ul>
-            </nav>
-            <div id="btn-menu">
-                <span></span><span></span><span></span>
+        <div id="gnb">
+            <div class="wrap">
+                <div class="logo">
+                    <a href="index.html">🏕️ 월촌<span>캠핑장</span></a>
+                </div>
+                <nav id="main-nav">
+                    <button id="btn-menu-close">✕</button>
+                    <ul>
+                        <li>
+                            <a href="introduce.html">캠핑장 소개</a>
+                            <ul class="dropdown">
+                                <li><a href="introduce.html">인사말</a></li>
+                                <li><a href="rules.html">이용 수칙</a></li>
+                                <li><a href="map.html">오시는 길</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="facility.html">캠핑장 둘러보기</a>
+                            <ul class="dropdown">
+                                <li><a href="facility.html">시설 안내</a></li>
+                                <li><a href="sites.html">구역별 자리 안내</a></li>
+                                <li><a href="news.html">월촌의 소식('가칭')</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="rates.html">캠핑장 예약</a>
+                            <ul class="dropdown">
+                                <li><a href="rates.html">예약 / 요금 안내</a></li>
+                                <li><a href="reservation.html">실시간 예약</a></li>
+                                <li><a href="confirm.html">예약 확인 / 취소</a></li>
+                                <li><a href="refund.html">환불규정 / 유의사항</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="notice.html">커뮤니티</a>
+                            <ul class="dropdown">
+                                <li><a href="notice.html">공지사항</a></li>
+                                <li><a href="faq.html">자주 묻는 질문</a></li>
+                                <!-- <li><a href="contact.html">문의하기</a></li> -->
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+                <div id="btn-menu">
+                    <span></span><span></span><span></span>
+                </div>
             </div>
         </div>
-    </div>
     </header>
 
     <section class="page-visual">
@@ -76,78 +78,85 @@
     </div>
 
     <main class="section">
-    <div class="wrap">
-        <div class="section-title">
-            <h2>Reservation</h2>
-            <p>날짜와 구역을 선택하여 예약을 진행해 주세요.</p>
-            <div class="line"></div>
-        </div>
-
-        <div id="step-calendar" class="res-card">
-            <h3>1. 날짜 선택</h3>
-            <div class="calendar-wrapper">
-                <input type="text" id="date-picker" placeholder="체크인 - 체크아웃 날짜를 선택하세요" readonly>
+        <div class="wrap">
+            <div class="section-title">
+                <h2>Reservation</h2>
+                <p>날짜와 구역을 선택하여 예약을 진행해 주세요.</p>
+                <div class="line"></div>
             </div>
-        </div>
 
-        <div id="step-map" class="res-card" style="display:none; margin-top:50px;">
-            <h3>2. 구역 선택</h3>
-            <p class="map-guide">원하시는 캠핑 구역을 클릭해 주세요.</p>
-            <div class="map-container">
-                <svg viewBox="0 0 800 400" id="camping-map">
-                    <rect width="800" height="400" fill="#f0ede6" rx="15" />
-                    <g class="site-group" data-site="A-1">
-                        <rect x="100" y="100" width="80" height="80" class="site-rect" />
-                        <text x="140" y="145" text-anchor="middle" fill="white">A-1</text>
-                    </g>
-                    <g class="site-group" data-site="A-2">
-                        <rect x="200" y="100" width="80" height="80" class="site-rect" />
-                        <text x="240" y="145" text-anchor="middle" fill="white">A-2</text>
-                    </g>
-                    <g class="site-group" data-site="B-1">
-                        <rect x="500" y="100" width="80" height="80" class="site-rect" />
-                        <text x="540" y="145" text-anchor="middle" fill="white">B-1</text>
-                    </g>
-                    <path d="M 0 250 Q 400 200 800 250" stroke="#ddd" stroke-width="20" fill="none" />
-                </svg>
+            <div class="res-card" id="step-date">
+                <div class="section-title">
+                    <h2>1. 날짜 선택</h2>
+                    <div class="line"></div>
+                </div>
+
+                <div id="inline-calendar" style="margin-bottom: 20px;"></div>
+
+                <input type="hidden" id="date-picker">
+                <p>총 결제 금액: <span id="final-price" style="font-weight:bold; color:var(--accent);">0원</span></p>
             </div>
-        </div>
 
-        <div id="step-summary" class="res-card" style="display:none; margin-top:50px; background:var(--primary-dark); color:#fff;">
-            <div class="summary-content">
-                <p>선택 날짜: <span id="res-date-val">-</span></p>
-                <p>선택 구역: <span id="res-site-val">-</span></p>
-            </div>
-            <a href="#" id="btn-next-step" class="btn btn-accent" style="margin-top:20px;">정보 입력하러 가기 →</a>
-        </div>
-    </div>
-    </main>
-
-<footer id="footer">
-    <div class="wrap">
-        <div id="footer-top">
-            <div>
-                <div class="footer-logo">🏕️ 월촌<span>캠핑장</span></div>
-                <div class="footer-info">
-                    <p>상호 : 월촌캠핑장 &nbsp;|&nbsp; 대표 : 홍길동</p>
-                    <p>주소 : 주소를 입력해주세요</p>
-                    <p>사업자번호 : 000-00-00000</p>
-                    <p>이메일 : email@example.com</p>
+            <div id="step-map" class="res-card" style="display:none; margin-top:50px;">
+                <h3>2. 구역 선택</h3>
+                <p class="map-guide">원하시는 캠핑 구역을 클릭해 주세요.</p>
+                <div class="map-container">
+                    <svg viewBox="0 0 800 400" id="camping-map">
+                        <rect width="800" height="400" fill="#f0ede6" rx="15" />
+                        <g class="site-group" data-site="A-1">
+                            <rect x="100" y="100" width="80" height="80" class="site-rect" />
+                            <text x="140" y="145" text-anchor="middle" fill="white">A-1</text>
+                        </g>
+                        <g class="site-group" data-site="A-2">
+                            <rect x="200" y="100" width="80" height="80" class="site-rect" />
+                            <text x="240" y="145" text-anchor="middle" fill="white">A-2</text>
+                        </g>
+                        <g class="site-group" data-site="B-1">
+                            <rect x="500" y="100" width="80" height="80" class="site-rect" />
+                            <text x="540" y="145" text-anchor="middle" fill="white">B-1</text>
+                        </g>
+                        <path d="M 0 250 Q 400 200 800 250" stroke="#ddd" stroke-width="20" fill="none" />
+                    </svg>
                 </div>
             </div>
-            <div class="footer-contact">
-                <h4>문의 및 예약</h4>
-                <div class="phone">000-0000-0000</div>
-                <p>상담시간 : 09:00 ~ 18:00</p>
-                <p>주말에는 문자로 문의해주세요</p>
+
+            <div id="step-summary" class="res-card"
+                style="display:none; margin-top:50px; background:var(--primary-dark); color:#fff;">
+                <div class="summary-content">
+                    <p>선택 날짜: <span id="res-date-val">-</span></p>
+                    <p>선택 구역: <span id="res-site-val">-</span></p>
+                </div>
+                <a href="#" id="btn-next-step" class="btn btn-accent" style="margin-top:20px;">정보 입력하러 가기 →</a>
             </div>
         </div>
-        <div id="footer-bottom">
-            <p>Copyright © 2026 월촌캠핑장. All Rights Reserved.</p>
-        </div>
-    </div>
-</footer>
+    </main>
 
-<script src="js/main.js"></script>
+    <footer id="footer">
+        <div class="wrap">
+            <div id="footer-top">
+                <div>
+                    <div class="footer-logo">🏕️ 월촌<span>캠핑장</span></div>
+                    <div class="footer-info">
+                        <p>상호 : 월촌캠핑장 &nbsp;|&nbsp; 대표 : 홍길동</p>
+                        <p>주소 : 주소를 입력해주세요</p>
+                        <p>사업자번호 : 000-00-00000</p>
+                        <p>이메일 : email@example.com</p>
+                    </div>
+                </div>
+                <div class="footer-contact">
+                    <h4>문의 및 예약</h4>
+                    <div class="phone">000-0000-0000</div>
+                    <p>상담시간 : 09:00 ~ 18:00</p>
+                    <p>주말에는 문자로 문의해주세요</p>
+                </div>
+            </div>
+            <div id="footer-bottom">
+                <p>Copyright © 2026 월촌캠핑장. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
 </body>
+
 </html>

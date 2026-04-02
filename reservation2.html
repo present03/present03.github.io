@@ -131,14 +131,14 @@
                             </div>
                             <div class="input-group">
                                 <label>아동 인원 (초등생 이하)</label>
-                                <select name="child_count">
+                                <select id="child_count" name="child_count">
                                     <option value="0">0명</option>
                                     <option value="1">1명</option>
                                     <option value="2">2명</option>
                                     <option value="manual">직접 입력</option>
                                 </select>
-                                <input type="number" id="adult_manual_input" class="manual-input"
-                                    name="adult_count_manual" min="1" placeholder="인원수 입력" style="display:none;">
+                                <input type="number" id="child_manual_input" class="manual-input"
+                                    name="child_count_manual" min="0" placeholder="인원수 입력" style="display:none;">
                             </div>
                             <div class="input-group full-width">
                                 <label>차량 번호 (주차 등록용)</label>

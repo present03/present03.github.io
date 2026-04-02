@@ -70,41 +70,41 @@ document.addEventListener('DOMContentLoaded', function () {
         smoothScroll: function (id, block = 'start') {
             document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: block });
         },
-        handleStep1: function() {
-            const dateInput = document.getElementById('date-picker');
-            const siteGroups = document.querySelectorAll('.site-group');
-
-            // 1. 날짜 선택 시 지도 노출
-            if (dateInput) {
-                flatpickr(dateInput, {
+        handleStep1: function () {
+            // 1. 인라인 달력 설정 및 요금 계산
+            const calendarEl = document.getElementById('inline-calendar');
+            if (calendarEl) {
+                flatpickr(calendarEl, {
+                    inline: true, // 팝업 없이 즉시 노출
                     mode: "range", minDate: "today", dateFormat: "Y-m-d", locale: "ko",
-                    onClose: (dates, str) => {
+                    onChange: (dates, str) => {
                         if (dates.length === 2) {
                             document.getElementById('res-date-val').innerText = str;
+
+                            // [핵심] 1박 5만원 실시간 요금 계산
+                            const diffDays = Math.ceil(Math.abs(dates[1] - dates[0]) / (1000 * 60 * 60 * 24));
+                            const totalPrice = diffDays * 50000;
+                            const priceEl = document.getElementById('final-price');
+                            if (priceEl) priceEl.innerText = totalPrice.toLocaleString() + "원";
+
                             const stepMap = document.getElementById('step-map');
-                            if(stepMap) stepMap.style.display = 'block';
+                            if (stepMap) stepMap.style.display = 'block';
                             setTimeout(() => this.smoothScroll('step-map'), 200);
                         }
                     }
                 });
             }
 
-            // 2. 구역 클릭 시 하이라이트 및 요약 노출
-            siteGroups.forEach(group => {
-                group.addEventListener('click', function() {
-                    // 모든 구역 선택 해제 후 클릭한 곳만 선택
+            // 2. 구역 클릭 시 하이라이트 (기존 로직 유지)
+            document.querySelectorAll('.site-group').forEach(group => {
+                group.addEventListener('click', function () {
                     document.querySelectorAll('.site-group').forEach(g => g.classList.remove('selected'));
                     this.classList.add('selected');
-                    
-                    const siteName = this.dataset.site;
-                    document.getElementById('res-site-val').innerText = siteName;
+                    document.getElementById('res-site-val').innerText = this.dataset.site;
 
-                    // 요약 섹션 노출
                     const stepSummary = document.getElementById('step-summary');
-                    if(stepSummary) {
-                        stepSummary.style.display = 'block';
-                        setTimeout(() => ResManager.smoothScroll('step-summary', 'center'), 200);
-                    }
+                    if (stepSummary) stepSummary.style.display = 'block';
+                    setTimeout(() => ResManager.smoothScroll('step-summary', 'center'), 200);
                 });
             });
 
@@ -121,14 +121,34 @@ document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('reservation-detail-form');
             if (!form) return;
 
-            // 1. [기존 유지] 인원수 직접 입력 로직
+            // 1.  성인 인원 직접 입력 로직
             const adultSelect = document.getElementById('adult_count');
             const adultManual = document.getElementById('adult_manual_input');
+
             adultSelect?.addEventListener('change', function () {
                 const isManual = this.value === 'manual';
                 adultManual.style.display = isManual ? 'block' : 'none';
-                if (isManual) adultManual.focus();
-                if (isManual) adultManual.required = true;
+                if (isManual) {
+                    adultManual.focus();
+                    adultManual.required = true;
+                } else {
+                    adultManual.required = false;
+                }
+            });
+
+            // 1-1 아동 인원 직접 입력 로직
+            const childSelect = document.getElementById('child_count');
+            const childManual = document.getElementById('child_manual_input');
+
+            childSelect?.addEventListener('change', function () {
+                const isManual = this.value === 'manual';
+                childManual.style.display = isManual ? 'block' : 'none';
+                if (isManual) {
+                    childManual.focus();
+                    childManual.required = true;
+                } else {
+                    childManual.required = false;
+                }
             });
 
             // 2. [신규 추가] 입력 제한 로직 (전화번호, 차량번호)
