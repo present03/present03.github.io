@@ -476,3 +476,98 @@ img { max-width: 100%; display: block; }
     color: var(--primary-dark) !important;
     fill: var(--primary-dark) !important;
 }
+
+/* 예약 상세 페이지 전용 스타일 */
+.res-info-bar {
+    display: flex;
+    justify-content: space-around;
+    background: var(--primary);
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+.res-info-bar .info-item small { display: block; opacity: 0.8; font-size: 12px; margin-bottom: 5px; }
+.res-info-bar .info-item p { font-size: 18px; font-weight: bold; }
+
+.form-section { text-align: left; margin-bottom: 40px; }
+.form-section h3 { font-size: 18px; margin-bottom: 20px; color: var(--primary-dark); border-left: 4px solid var(--accent); padding-left: 15px; }
+
+.input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.input-grid .full-width { grid-column: span 2; }
+
+.btn-area { display: flex; gap: 15px; justify-content: center; margin-top: 40px; }
+.btn-outline { background: #fff; border: 1px solid #ddd; color: #666; }
+
+@media (max-width: 900px) {
+    .input-grid { grid-template-columns: 1fr; }
+    .input-grid .full-width { grid-column: span 1; }
+    .res-info-bar { flex-direction: column; gap: 15px; text-align: center; }
+}
+
+/* ==========================================
+   인원수 직접 입력창 스타일 (The 2.1 Studio)
+   ========================================== */
+
+/* 직접 입력 시 나타나는 숫자 인풋 박스 */
+.manual-input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: 2px solid var(--accent); /* 포인트 컬러인 오렌지 계열 사용 */
+    border-radius: 6px;
+    font-size: 15px;
+    outline: none;
+    box-sizing: border-box; /* 패딩이 너비에 포함되도록 설정 */
+    transition: all 0.3s ease;
+    
+    /* 나타날 때 부드러운 애니메이션 */
+    animation: fadeInDown 0.4s ease-out;
+}
+
+.manual-input:focus {
+    border-color: var(--primary); /* 입력 시 초록색으로 변경 */
+    box-shadow: 0 0 8px rgba(45, 90, 39, 0.2);
+}
+
+/* 애니메이션 정의 */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 예약 결제 페이지  */
+.status-badge {
+    display: inline-block;
+    padding: 8px 20px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+.bank-info-box {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    margin-bottom: 30px;
+}
+.bank-details strong {
+    display: block;
+    font-size: 24px;
+    color: var(--primary-dark);
+    margin: 10px 0;
+}
+.timer-text {
+    color: #e74c3c; /* 경고를 위한 붉은색 */
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
