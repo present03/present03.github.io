@@ -1,237 +1,183 @@
 /* ==========================================
-   월촌캠핑장 - 공통 JS
+   월촌캠핑장 - 통합 관리 스크립트 (The 2.1 Studio)
    ========================================== */
 
 document.addEventListener('DOMContentLoaded', function () {
-
-    // ===== 모바일 메뉴 =====
-    const btnMenu = document.getElementById('btn-menu');
-    const mainNav = document.getElementById('main-nav');
-    const btnClose = document.getElementById('btn-menu-close');
-
-    if (btnMenu) {
-        btnMenu.addEventListener('click', function () {
-            mainNav.classList.toggle('open');
-        });
-    }
-    if (btnClose) {
-        btnClose.addEventListener('click', function () {
-            mainNav.classList.remove('open');
-        });
-    }
-
-    // ===== 현재 페이지 메뉴 활성화 =====
-    const currentPath = window.location.pathname;
-    const navLinks = document.querySelectorAll('#main-nav > ul > li > a');
-    navLinks.forEach(link => {
-        if (link.getAttribute('href') === currentPath) {
-            link.parentElement.classList.add('active');
-        }
-    });
-
-    // ===== 메인 슬라이더 =====
-    const slider = document.querySelector('.main-slider');
-    if (slider) {
-        const slides = slider.querySelectorAll('.slide');
-        const dots = slider.querySelectorAll('.dot');
-        let current = 0;
-        let timer;
-
-        function goTo(n) {
-            slides[current].classList.remove('active');
-            if (dots[current]) dots[current].classList.remove('active');
-            current = (n + slides.length) % slides.length;
-            slides[current].classList.add('active');
-            if (dots[current]) dots[current].classList.add('active');
-        }
-
-        function next() { goTo(current + 1); }
-
-        function startAuto() { timer = setInterval(next, 4000); }
-        function stopAuto() { clearInterval(timer); }
-
-        // 버튼
-        const btnPrev = slider.querySelector('.slider-prev');
-        const btnNext = slider.querySelector('.slider-next');
-        if (btnPrev) btnPrev.addEventListener('click', () => { stopAuto(); goTo(current - 1); startAuto(); });
-        if (btnNext) btnNext.addEventListener('click', () => { stopAuto(); goTo(current + 1); startAuto(); });
-
-        // 닷
-        dots.forEach((dot, i) => {
-            dot.addEventListener('click', () => { stopAuto(); goTo(i); startAuto(); });
-        });
-
-        if (slides.length > 0) {
-            slides[0].classList.add('active');
-            if (dots[0]) dots[0].classList.add('active');
-            startAuto();
-        }
-    }
-
-    // ===== 스크롤 시 헤더 그림자 =====
-    window.addEventListener('scroll', function () {
-        const header = document.getElementById('header');
-        if (header) {
-            if (window.scrollY > 10) {
-                header.style.boxShadow = '0 4px 20px rgba(0,0,0,0.12)';
-            } else {
-                header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.08)';
-            }
-        }
-    });
-
-    // ===== 탭 기능 =====
-    const tabBtns = document.querySelectorAll('.tab-btn');
-    tabBtns.forEach(btn => {
-        btn.addEventListener('click', function () {
-            const target = this.dataset.tab;
-            const parent = this.closest('.tab-wrap');
-
-            parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-            this.classList.add('active');
-            parent.querySelector('#' + target).classList.add('active');
-        });
-    });
-    // ===== [이점일 스튜디오] Flatpickr 달력 및 자동 스크롤 로직 =====
-    const dateInput = document.getElementById('date-picker');
-    const stepMap = document.getElementById('step-map');
-    const stepSummary = document.getElementById('step-summary');
-    const siteGroups = document.querySelectorAll('.site-group');
-
-    if (dateInput) {
-        // Flatpickr 엔진 가동
-        flatpickr(dateInput, {
-            mode: "range",
-            minDate: "today",
-            dateFormat: "Y-m-d",
-            locale: "ko",
-            onClose: function(selectedDates, dateStr) {
-                if (selectedDates.length === 2) {
-                    document.getElementById('res-date-val').innerText = dateStr;
-
-                    // 다음 단계(지도) 노출
-                    if(stepMap) stepMap.style.display = 'block';
-                    
-                    // CTO님이 설계하신 자동 스크롤 실행
-                    setTimeout(() => {
-                        stepMap.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 200);
-                }
-            }
-        });
-    }
-
-    if (siteGroups.length > 0) {
-        // 지도 구역 클릭 이벤트
-        siteGroups.forEach(group => {
-            group.addEventListener('click', function() {
-                siteGroups.forEach(g => g.classList.remove('selected'));
-                this.classList.add('selected');
-                
-                const siteName = this.getAttribute('data-site');
-                document.getElementById('res-site-val').innerText = siteName;
-
-                // 마지막 요약 섹션 노출 및 스크롤
-                if(stepSummary) stepSummary.style.display = 'block';
-                setTimeout(() => {
-                    stepSummary.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 200);
+    // 1. 공통 UI 매니저 (메뉴, 슬라이더, 헤더 등)
+    const CampingUI = {
+        init: function () {
+            this.handleMobileMenu();
+            this.handleHeaderShadow();
+            this.initSlider();
+            this.initTabs();
+        },
+        handleMobileMenu: function () {
+            const btnMenu = document.getElementById('btn-menu');
+            const mainNav = document.getElementById('main-nav');
+            const btnClose = document.getElementById('btn-menu-close');
+            if (btnMenu) btnMenu.addEventListener('click', () => mainNav.classList.add('open'));
+            if (btnClose) btnClose.addEventListener('click', () => mainNav.classList.remove('open'));
+        },
+        handleHeaderShadow: function () {
+            const header = document.getElementById('header');
+            window.addEventListener('scroll', () => {
+                if (header) header.style.boxShadow = window.scrollY > 10 ? '0 4px 20px rgba(0,0,0,0.12)' : '0 2px 20px rgba(0,0,0,0.08)';
             });
-        });
-    }
-    // 예약정보입력으로 이동하며 정보 전송
-    const nextBtn = document.getElementById('btn-next-step');
-    if (nextBtn) {
-        nextBtn.addEventListener('click', function(e) {
-            e.preventDefault(); // 기본 링크 이동 방지
-
-            // 현재 화면에 표시된 값 가져오기
-            const dateVal = document.getElementById('res-date-val').innerText;
-            const siteVal = document.getElementById('res-site-val').innerText;
-
-            if (siteVal === "-") {
-                alert("구역을 먼저 선택해 주세요!");
-                return;
-            }
-
-            // 데이터를 주소창(Query String)에 담아 이동
-            // 결과 예시: reservation2.html?date=2026-04-10&site=A-1
-            location.href = `reservation2.html?date=${encodeURIComponent(dateVal)}&site=${encodeURIComponent(siteVal)}`;
-        });
-    }
-
-    // =====  URL 파라미터 수신 및 표시 로직 =====
-    const urlParams = new URLSearchParams(window.location.search);
-    const selectedDate = urlParams.get('date');
-    const selectedSite = urlParams.get('site');
-
-    if (document.getElementById('summary-date')) {
-        document.getElementById('summary-date').innerText = selectedDate || "선택된 날짜 없음";
-        document.getElementById('summary-site').innerText = selectedSite || "선택된 구역 없음";
-    }
-
-    // =====  인원수 직접 입력 제어 로직 =====
-    const adultSelect = document.getElementById('adult_count');
-    const adultManualInput = document.getElementById('adult_manual_input');
-
-    if (adultSelect && adultManualInput) {
-        adultSelect.addEventListener('change', function() {
-            if (this.value === 'manual') {
-                // '직접 입력' 선택 시 인풋창 노출
-                adultManualInput.style.display = 'block';
-                adultManualInput.focus(); // 바로 입력할 수 있게 커서 이동
-                adultManualInput.required = true; // 필수 입력으로 변경
-            } else {
-                // 다른 인원 선택 시 인풋창 숨김
-                adultManualInput.style.display = 'none';
-                adultManualInput.required = false;
-                adultManualInput.value = ''; // 입력값 초기화
-            }
-        });
-    }
-
-    //  데이터 DB 전송 후 페이지 이동
-    const form2 = document.getElementById('reservation-detail-form');
-    
-    if (form2) {
-        form2.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // 1. 전송할 데이터 취합
-            const urlParams = new URLSearchParams(window.location.search);
-            const formData = {
-                date: urlParams.get('date'),
-                site: urlParams.get('site'),
-                name: this.guest_name.value,
-                phone: this.guest_phone.value,
-                adults: this.adult_count.value === 'manual' ? this.adult_count_manual.value : this.adult_count.value,
-                children: this.child_count.value,
-                car: this.car_number.value,
-                request: this.special_request.value,
-                status: "pending" // 결제 대기 상태
+        },
+        initSlider: function () {
+            const slider = document.querySelector('.main-slider');
+            if (!slider) return;
+            const slides = slider.querySelectorAll('.slide');
+            const dots = slider.querySelectorAll('.dot');
+            let current = 0, timer;
+            const goTo = (n) => {
+                slides[current].classList.remove('active');
+                if (dots[current]) dots[current].classList.remove('active');
+                current = (n + slides.length) % slides.length;
+                slides[current].classList.add('active');
+                if (dots[current]) dots[current].classList.add('active');
             };
-
-            console.log("DB로 전송할 데이터:", formData);
-
-            // 2. 서버로 데이터 전송 (실제 DB 연결 시 fetch 사용)
-            /*
-            fetch('https://api.your-server.com/reservation', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                location.href = 'reservation3.html'; // 성공 시 이동
+            const start = () => timer = setInterval(() => goTo(current + 1), 4000);
+            const stop = () => clearInterval(timer);
+            slider.querySelector('.slider-prev')?.addEventListener('click', () => { stop(); goTo(current - 1); start(); });
+            slider.querySelector('.slider-next')?.addEventListener('click', () => { stop(); goTo(current + 1); start(); });
+            dots.forEach((dot, i) => dot.addEventListener('click', () => { stop(); goTo(i); start(); }));
+            if (slides.length > 0) { slides[0].classList.add('active'); dots[0]?.classList.add('active'); start(); }
+        },
+        initTabs: function () {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const parent = this.closest('.tab-wrap');
+                    parent.querySelectorAll('.tab-btn, .tab-content').forEach(el => el.classList.remove('active'));
+                    this.classList.add('active');
+                    parent.querySelector('#' + this.dataset.tab).classList.add('active');
+                });
             });
-            */
+        }
+    };
 
-            // 지금은 서버가 없으므로 성공했다고 가정하고 바로 이동시킵니다.
-            alert("예약 정보가 안전하게 접수되었습니다.");
-            location.href = 'reservation3.html';
-        });
-    }
+    // 2. 예약 시스템 매니저
+    const ResManager = {
+        init: function () {
+            this.params = new URLSearchParams(window.location.search);
+            this.handleStep1(); // 날짜/구역 선택
+            this.handleStep2(); // 정보 입력
+            this.displaySummary(); // 요약 바 출력
+        },
+        // URL 데이터 가져오기 헬퍼
+        getParam: function (key) { return this.params.get(key); },
+        // 부드러운 스크롤 헬퍼
+        smoothScroll: function (id, block = 'start') {
+            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: block });
+        },
+        handleStep1: function() {
+            const dateInput = document.getElementById('date-picker');
+            const siteGroups = document.querySelectorAll('.site-group');
 
+            // 1. 날짜 선택 시 지도 노출
+            if (dateInput) {
+                flatpickr(dateInput, {
+                    mode: "range", minDate: "today", dateFormat: "Y-m-d", locale: "ko",
+                    onClose: (dates, str) => {
+                        if (dates.length === 2) {
+                            document.getElementById('res-date-val').innerText = str;
+                            const stepMap = document.getElementById('step-map');
+                            if(stepMap) stepMap.style.display = 'block';
+                            setTimeout(() => this.smoothScroll('step-map'), 200);
+                        }
+                    }
+                });
+            }
+
+            // 2. 구역 클릭 시 하이라이트 및 요약 노출
+            siteGroups.forEach(group => {
+                group.addEventListener('click', function() {
+                    // 모든 구역 선택 해제 후 클릭한 곳만 선택
+                    document.querySelectorAll('.site-group').forEach(g => g.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    const siteName = this.dataset.site;
+                    document.getElementById('res-site-val').innerText = siteName;
+
+                    // 요약 섹션 노출
+                    const stepSummary = document.getElementById('step-summary');
+                    if(stepSummary) {
+                        stepSummary.style.display = 'block';
+                        setTimeout(() => ResManager.smoothScroll('step-summary', 'center'), 200);
+                    }
+                });
+            });
+
+            // 3. 다음 단계 이동
+            document.getElementById('btn-next-step')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                const d = document.getElementById('res-date-val').innerText;
+                const s = document.getElementById('res-site-val').innerText;
+                if (s === "-") return alert("구역을 먼저 선택해 주세요!");
+                location.href = `reservation2.html?date=${encodeURIComponent(d)}&site=${encodeURIComponent(s)}`;
+            });
+        },
+        handleStep2: function () {
+            const form = document.getElementById('reservation-detail-form');
+            if (!form) return;
+
+            // 1. [기존 유지] 인원수 직접 입력 로직
+            const adultSelect = document.getElementById('adult_count');
+            const adultManual = document.getElementById('adult_manual_input');
+            adultSelect?.addEventListener('change', function () {
+                const isManual = this.value === 'manual';
+                adultManual.style.display = isManual ? 'block' : 'none';
+                if (isManual) adultManual.focus();
+                if (isManual) adultManual.required = true;
+            });
+
+            // 2. [신규 추가] 입력 제한 로직 (전화번호, 차량번호)
+            const phoneInput = form.querySelector('input[name="guest_phone"]');
+            const carInput = form.querySelector('input[name="car_number"]');
+
+            // 숫자와 하이픈(-)만 허용
+            phoneInput?.addEventListener('input', function () {
+                this.value = this.value.replace(/[^0-9-]/g, '');
+            });
+
+            // 영어 입력 방지
+            carInput?.addEventListener('input', function () {
+                this.value = this.value.replace(/[a-zA-Z]/g, '');
+            });
+
+            // 3. [기존+검증 추가] 서버 전송 시뮬레이션
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                // [신규] 전화번호 자리수 최종 검증 (지역번호 9자~휴대폰 11자)
+                const phoneValue = phoneInput.value.replace(/-/g, '');
+                if (phoneValue.length < 9 || phoneValue.length > 11) {
+                    alert("전화번호 형식이 올바르지 않습니다. 다시 확인해 주세요.");
+                    phoneInput.focus();
+                    return;
+                }
+
+                // 버튼 상태 변경 및 이동
+                const btn = document.getElementById('btn-next-to-pay');
+                if (btn) {
+                    btn.innerText = "전송 중...";
+                    btn.disabled = true;
+                }
+
+                setTimeout(() => {
+                    alert("예약 정보가 안전하게 접수되었습니다.");
+                    location.href = 'reservation3.html';
+                }, 1000);
+            });
+        },
+        displaySummary: function () {
+            const d = document.getElementById('summary-date');
+            const s = document.getElementById('summary-site');
+            if (d) d.innerText = this.getParam('date') || "선택된 날짜 없음";
+            if (s) s.innerText = this.getParam('site') || "선택된 구역 없음";
+        }
+    };
+
+    CampingUI.init();
+    ResManager.init();
 });

@@ -385,189 +385,115 @@ img { max-width: 100%; display: block; }
 }
 
 /* ==========================================
-   실시간 예약 시스템 전용 (The 2.1 Studio)
+   실시간 예약 시스템 통합 스타일 (4.3 0211분 업데이트)
    ========================================== */
 
-/* 예약 단계별 카드 디자인 */
+/* 1. 기본 카드 및 레이아웃 */
 .res-card {
-    background: #fff;
+    background: var(--white);
     padding: 40px;
     border-radius: 15px;
     border: 1px solid #eee;
     text-align: center;
-    transition: all 0.5s ease;
     margin-bottom: 30px;
+    transition: all 0.4s ease;
 }
 
-/* 날짜 입력창 스타일 */
-#date-picker {
-    width: 100%;
-    max-width: 400px;
-    padding: 15px;
-    border: 2px solid var(--primary);
-    border-radius: 8px;
-    font-size: 16px;
-    text-align: center;
-    cursor: pointer;
-    background-color: #fff;
-    transition: border-color 0.3s;
-}
-#date-picker:hover { border-color: var(--accent); }
-
-/* 지도 컨테이너 및 SVG 스타일 */
-.map-container {
-    max-width: 800px;
-    margin: 30px auto;
-    background: #fcfcfc;
-    border-radius: 10px;
-    padding: 10px;
-    border: 1px dashed #ccc;
-}
-.site-rect {
-    fill: var(--primary-light);
-    cursor: pointer;
-    transition: fill 0.3s, transform 0.2s;
-}
-.site-rect:hover {
-    fill: var(--accent);
-    transform: scale(1.02);
-}
-.site-group.selected .site-rect {
-    fill: var(--accent);
-    stroke: var(--primary-dark);
-    stroke-width: 3;
-}
-.site-group text {
-    font-size: 14px;
-    font-weight: bold;
-    pointer-events: none; /* 텍스트 클릭 방지 */
-}
-
-/* 요약 영역 */
-.summary-content {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    font-size: 18px;
-    font-weight: 500;
-}
-
-/* Flatpickr 달력 커스텀 스타일 */
-.flatpickr-day.selected, 
-.flatpickr-day.startRange, 
-.flatpickr-day.endRange, 
-.flatpickr-day.selected.inRange, 
-.flatpickr-day.startRange.inRange, 
-.flatpickr-day.endRange.inRange, 
-.flatpickr-day.selected:focus, 
-.flatpickr-day.startRange:focus, 
-.flatpickr-day.endRange:focus, 
-.flatpickr-day.selected:hover, 
-.flatpickr-day.startRange:hover, 
-.flatpickr-day.endRange:hover, 
-.flatpickr-day.prevMonthDay.selection.inRange, 
-.flatpickr-day.nextMonthDay.selection.inRange, 
-.flatpickr-day.selection.inRange {
-    background: var(--primary) !important; /* 캠핑장 포인트 컬러 적용 */
-    border-color: var(--primary) !important;
-}
-
-.flatpickr-months .flatpickr-month {
-    color: var(--primary-dark) !important;
-    fill: var(--primary-dark) !important;
-}
-
-/* 예약 상세 페이지 전용 스타일 */
 .res-info-bar {
     display: flex;
     justify-content: space-around;
     background: var(--primary);
-    color: #fff;
+    color: var(--white);
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 30px;
 }
-.res-info-bar .info-item small { display: block; opacity: 0.8; font-size: 12px; margin-bottom: 5px; }
 .res-info-bar .info-item p { font-size: 18px; font-weight: bold; }
 
+/* 2. 폼 및 입력창 스타일 */
 .form-section { text-align: left; margin-bottom: 40px; }
 .form-section h3 { font-size: 18px; margin-bottom: 20px; color: var(--primary-dark); border-left: 4px solid var(--accent); padding-left: 15px; }
 
 .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .input-grid .full-width { grid-column: span 2; }
 
-.btn-area { display: flex; gap: 15px; justify-content: center; margin-top: 40px; }
-.btn-outline { background: #fff; border: 1px solid #ddd; color: #666; }
+/* [색상 변경 가능] 입력창 포커스 효과 */
+input:focus, select:focus, textarea:focus {
+    border-color: var(--primary) !important; /* 강조색으로 테두리 변경 */
+    outline: none;
+}
+
+/* --- 3. 캠핑장 지도 SVG 커스텀 섹션  --- */
+
+/* [색상 변경 가능] 지도 구역 이름(텍스트) */
+.site-group text {
+    font-size: 14px; font-weight: bold; pointer-events: none;
+    fill: #000000; /* ← 평상시 글자 색상 */
+    transition: all 0.3s ease;
+}
+
+/* 구역별 기본 배경색 설정 (신현재 CTO님 커스텀) */
+.site-group[data-site^="A"] .site-rect { fill: #71a610; } 
+.site-group[data-site^="B"] .site-rect { fill: #1648ad; } 
+
+.site-rect {
+    stroke: #ddd;
+    stroke-width: 1px;
+    cursor: pointer;
+    /* [중요] 모든 움직임의 부드러움 결정 */
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), fill 0.3s, stroke 0.3s;
+}
+
+/* --- 4. 호버/클릭 효과 --- */
+
+/* 1. [Hover] 마우스를 올리면 아래로 슥 다운 (눌리는 느낌) */
+.site-group:hover .site-rect {
+    /* ↓↓↓ 여기서 내려가는 정도를 조절하세요 (숫자가 클수록 더 내려감) ↓↓↓ */
+    fill: var(--accent) !important;
+    transform: translateY(4px); 
+    opacity: 0.9;
+}
+
+/* 2. [Selected] 클릭해서 선택되면 테두리가 생기며 위로 탁! (튀어나오는 느낌) */
+.site-group.selected .site-rect {
+    fill: var(--accent) !important;      /* 내부 색상: 오렌지 */
+    stroke: var(--primary-dark) !important;    /* 테두리 색상: 오렌지 (동일하게!) */
+    stroke-width: 4px !important;       /* 테두리 두께 강조 */
+    opacity: 1 !important;              /* 투명도 제거 */
+    transform: translateY(-6px) !important; /* 위로 툭 튀어오르는 효과 */
+}
+
+/* 선택된 구역의 글자도 같이 위로 따라오게 설정 */
+.site-group.selected text {
+    fill: #ffffff !important;
+    transform: translateY(-6px);
+    transition: transform 0.2s;
+}
+
+/* 5. 결제 및 기타 안내 스타일 */
+.payment-amount {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px dashed #ddd;
+    font-size: 18px;
+}
+
+/* [색상 변경 가능] 최종 금액 글자 강조 */
+#final-price {
+    color: var(--accent); /* 최종 금액 강조색 */
+    font-size: 26px;
+    font-weight: 800;
+}
+
+.timer-text { color: #e74c3c; font-size: 18px; font-weight: bold; padding: 15px; background: #fff5f5; border-radius: 8px; }
+
+@keyframes resFadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
 @media (max-width: 900px) {
     .input-grid { grid-template-columns: 1fr; }
     .input-grid .full-width { grid-column: span 1; }
     .res-info-bar { flex-direction: column; gap: 15px; text-align: center; }
-}
-
-/* ==========================================
-   인원수 직접 입력창 스타일 (The 2.1 Studio)
-   ========================================== */
-
-/* 직접 입력 시 나타나는 숫자 인풋 박스 */
-.manual-input {
-    width: 100%;
-    padding: 12px;
-    margin-top: 10px;
-    border: 2px solid var(--accent); /* 포인트 컬러인 오렌지 계열 사용 */
-    border-radius: 6px;
-    font-size: 15px;
-    outline: none;
-    box-sizing: border-box; /* 패딩이 너비에 포함되도록 설정 */
-    transition: all 0.3s ease;
-    
-    /* 나타날 때 부드러운 애니메이션 */
-    animation: fadeInDown 0.4s ease-out;
-}
-
-.manual-input:focus {
-    border-color: var(--primary); /* 입력 시 초록색으로 변경 */
-    box-shadow: 0 0 8px rgba(45, 90, 39, 0.2);
-}
-
-/* 애니메이션 정의 */
-@keyframes fadeInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* 예약 결제 페이지  */
-.status-badge {
-    display: inline-block;
-    padding: 8px 20px;
-    background: var(--accent);
-    color: #fff;
-    border-radius: 50px;
-    font-weight: bold;
-    margin-bottom: 25px;
-}
-.bank-info-box {
-    background: #f8f9fa;
-    padding: 30px;
-    border-radius: 12px;
-    border: 1px solid #eee;
-    margin-bottom: 30px;
-}
-.bank-details strong {
-    display: block;
-    font-size: 24px;
-    color: var(--primary-dark);
-    margin: 10px 0;
-}
-.timer-text {
-    color: #e74c3c; /* 경고를 위한 붉은색 */
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 15px;
 }
