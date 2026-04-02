@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>예약 확인 / 취소 | 월촌캠핑장</title>
+    <title>실시간 예약 | 월촌캠핑장</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
 </head>
 <body>
 
@@ -61,33 +64,60 @@
 
     <section class="page-visual">
         <div class="wrap">
-            <h2>예약 확인 / 취소</h2>
-            <p>예약 정보를 확인하고 필요 시 취소할 수 있습니다.</p>
+            <h2>실시간 예약</h2>
+            <p>월촌캠핑장의 실시간 예약 시스템을 이용해보세요.</p>
         </div>
     </section>
-
+    <!-- 백워드 부분 -->
     <div class="breadcrumb">
         <div class="wrap">
-            <a href="index.html">HOME</a> <span>&gt;</span> 캠핑장 예약 <span>&gt;</span> <strong>예약 확인 / 취소</strong>
+            <a href="index.html">HOME</a> <span>&gt;</span> 캠핑장 예약 <span>&gt;</span> <strong>실시간 예약</strong>
         </div>
     </div>
 
-    <main class="section">
+<main class="section">
     <div class="wrap">
-        <div class="section-title"><h2>Confirm</h2><p>예약 내역을 확인하실 수 있습니다.</p><div class="line"></div></div>
-        <div style="max-width:500px; margin:0 auto; background:#fff; padding:40px; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.05);">
-            <div style="margin-bottom:20px;">
-                <label style="display:block; margin-bottom:8px;">예약자명</label>
-                <input type="text" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:6px;">
+        <div class="section-title">
+            <h2>Payment Information</h2>
+            <p>예약 확정을 위해 아래 계좌로 입금을 진행해 주세요.</p>
+            <div class="line"></div>
+        </div>
+
+        <div class="res-card payment-container">
+            <div class="status-badge">임시 예약 완료 (입금 대기)</div>
+            
+            <div class="bank-info-box">
+                <small>입금 계좌 안내</small>
+                <div class="bank-details">
+                    <span class="bank-name">OO은행</span>
+                    <strong class="account-number">123-456789-01-012</strong>
+                    <span class="account-holder">예금주: 이세원(이점일스튜디오)</span>
+                </div>
+                <div class="payment-amount">
+                    입금하실 금액: <strong id="final-price">100,000원</strong>
+                </div>
             </div>
-            <div style="margin-bottom:30px;">
-                <label style="display:block; margin-bottom:8px;">휴대폰 번호</label>
-                <input type="text" placeholder="'-'없이 입력" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:6px;">
+
+            <div class="payment-notice">
+                <p class="timer-text">
+                    ⚠️ <span id="countdown">03:00:00</span> 이내에 입금이 확인되지 않을 경우 <strong>자동으로 예약이 취소</strong>됩니다.
+                </p>
+                <ul class="notice-list">
+                    <li>반드시 <strong>예약자 성함 뒤 월촌을 붙여서</strong> 입금해 주세요.</li>
+                    <li> 예시) 홍길동 월촌</li>
+                    <li> 예약 완료는 예약 확정 문자 및 홈페이지의 예약 확인 시스템에서 확인 가능합니다.</li>
+                    <li>입금 확인 후 10분 이내에 예약 확정 문자가 발송됩니다.</li>
+                    <li>3시간 이내 미입금 시 별도의 통보 없이 예약 슬롯이 개방됩니다.</li>
+                </ul>
             </div>
-            <button class="btn btn-primary" style="width:100%;">예약 내역 조회</button>
+
+            <div class="btn-area">
+                <a href="index.html" class="btn btn-primary">홈으로 이동</a>
+                <a href="confirm.html" class="btn btn-outline">내 예약 확인하기</a>
+            </div>
         </div>
     </div>
-    </main>
+</main>
 
 <footer id="footer">
     <div class="wrap">

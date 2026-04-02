@@ -141,4 +141,97 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     }
+    // 예약정보입력으로 이동하며 정보 전송
+    const nextBtn = document.getElementById('btn-next-step');
+    if (nextBtn) {
+        nextBtn.addEventListener('click', function(e) {
+            e.preventDefault(); // 기본 링크 이동 방지
+
+            // 현재 화면에 표시된 값 가져오기
+            const dateVal = document.getElementById('res-date-val').innerText;
+            const siteVal = document.getElementById('res-site-val').innerText;
+
+            if (siteVal === "-") {
+                alert("구역을 먼저 선택해 주세요!");
+                return;
+            }
+
+            // 데이터를 주소창(Query String)에 담아 이동
+            // 결과 예시: reservation2.html?date=2026-04-10&site=A-1
+            location.href = `reservation2.html?date=${encodeURIComponent(dateVal)}&site=${encodeURIComponent(siteVal)}`;
+        });
+    }
+
+    // =====  URL 파라미터 수신 및 표시 로직 =====
+    const urlParams = new URLSearchParams(window.location.search);
+    const selectedDate = urlParams.get('date');
+    const selectedSite = urlParams.get('site');
+
+    if (document.getElementById('summary-date')) {
+        document.getElementById('summary-date').innerText = selectedDate || "선택된 날짜 없음";
+        document.getElementById('summary-site').innerText = selectedSite || "선택된 구역 없음";
+    }
+
+    // =====  인원수 직접 입력 제어 로직 =====
+    const adultSelect = document.getElementById('adult_count');
+    const adultManualInput = document.getElementById('adult_manual_input');
+
+    if (adultSelect && adultManualInput) {
+        adultSelect.addEventListener('change', function() {
+            if (this.value === 'manual') {
+                // '직접 입력' 선택 시 인풋창 노출
+                adultManualInput.style.display = 'block';
+                adultManualInput.focus(); // 바로 입력할 수 있게 커서 이동
+                adultManualInput.required = true; // 필수 입력으로 변경
+            } else {
+                // 다른 인원 선택 시 인풋창 숨김
+                adultManualInput.style.display = 'none';
+                adultManualInput.required = false;
+                adultManualInput.value = ''; // 입력값 초기화
+            }
+        });
+    }
+
+    //  데이터 DB 전송 후 페이지 이동
+    const form2 = document.getElementById('reservation-detail-form');
+    
+    if (form2) {
+        form2.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // 1. 전송할 데이터 취합
+            const urlParams = new URLSearchParams(window.location.search);
+            const formData = {
+                date: urlParams.get('date'),
+                site: urlParams.get('site'),
+                name: this.guest_name.value,
+                phone: this.guest_phone.value,
+                adults: this.adult_count.value === 'manual' ? this.adult_count_manual.value : this.adult_count.value,
+                children: this.child_count.value,
+                car: this.car_number.value,
+                request: this.special_request.value,
+                status: "pending" // 결제 대기 상태
+            };
+
+            console.log("DB로 전송할 데이터:", formData);
+
+            // 2. 서버로 데이터 전송 (실제 DB 연결 시 fetch 사용)
+            /*
+            fetch('https://api.your-server.com/reservation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                location.href = 'reservation3.html'; // 성공 시 이동
+            });
+            */
+
+            // 지금은 서버가 없으므로 성공했다고 가정하고 바로 이동시킵니다.
+            alert("예약 정보가 안전하게 접수되었습니다.");
+            location.href = 'reservation3.html';
+        });
+    }
+
 });
