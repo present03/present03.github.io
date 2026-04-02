@@ -94,5 +94,51 @@ document.addEventListener('DOMContentLoaded', function () {
             parent.querySelector('#' + target).classList.add('active');
         });
     });
+    // ===== [이점일 스튜디오] Flatpickr 달력 및 자동 스크롤 로직 =====
+    const dateInput = document.getElementById('date-picker');
+    const stepMap = document.getElementById('step-map');
+    const stepSummary = document.getElementById('step-summary');
+    const siteGroups = document.querySelectorAll('.site-group');
 
+    if (dateInput) {
+        // Flatpickr 엔진 가동
+        flatpickr(dateInput, {
+            mode: "range",
+            minDate: "today",
+            dateFormat: "Y-m-d",
+            locale: "ko",
+            onClose: function(selectedDates, dateStr) {
+                if (selectedDates.length === 2) {
+                    document.getElementById('res-date-val').innerText = dateStr;
+
+                    // 다음 단계(지도) 노출
+                    if(stepMap) stepMap.style.display = 'block';
+                    
+                    // CTO님이 설계하신 자동 스크롤 실행
+                    setTimeout(() => {
+                        stepMap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 200);
+                }
+            }
+        });
+    }
+
+    if (siteGroups.length > 0) {
+        // 지도 구역 클릭 이벤트
+        siteGroups.forEach(group => {
+            group.addEventListener('click', function() {
+                siteGroups.forEach(g => g.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                const siteName = this.getAttribute('data-site');
+                document.getElementById('res-site-val').innerText = siteName;
+
+                // 마지막 요약 섹션 노출 및 스크롤
+                if(stepSummary) stepSummary.style.display = 'block';
+                setTimeout(() => {
+                    stepSummary.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 200);
+            });
+        });
+    }
 });

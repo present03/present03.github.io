@@ -353,7 +353,7 @@ img { max-width: 100%; display: block; }
         overflow-y: auto;
     }
     #main-nav.open { display: block; }
-    /* 모바일 메뉴 스타일 */
+    /* 메뉴 열었을시 x 등장 */
     #main-nav.open #btn-menu-close {
         display: block;
         position: absolute;
@@ -382,4 +382,97 @@ img { max-width: 100%; display: block; }
 
     #footer-top { flex-direction: column; gap: 25px; }
     .wrap { padding: 0 20px; }
+}
+
+/* ==========================================
+   실시간 예약 시스템 전용 (The 2.1 Studio)
+   ========================================== */
+
+/* 예약 단계별 카드 디자인 */
+.res-card {
+    background: #fff;
+    padding: 40px;
+    border-radius: 15px;
+    border: 1px solid #eee;
+    text-align: center;
+    transition: all 0.5s ease;
+    margin-bottom: 30px;
+}
+
+/* 날짜 입력창 스타일 */
+#date-picker {
+    width: 100%;
+    max-width: 400px;
+    padding: 15px;
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    font-size: 16px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #fff;
+    transition: border-color 0.3s;
+}
+#date-picker:hover { border-color: var(--accent); }
+
+/* 지도 컨테이너 및 SVG 스타일 */
+.map-container {
+    max-width: 800px;
+    margin: 30px auto;
+    background: #fcfcfc;
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px dashed #ccc;
+}
+.site-rect {
+    fill: var(--primary-light);
+    cursor: pointer;
+    transition: fill 0.3s, transform 0.2s;
+}
+.site-rect:hover {
+    fill: var(--accent);
+    transform: scale(1.02);
+}
+.site-group.selected .site-rect {
+    fill: var(--accent);
+    stroke: var(--primary-dark);
+    stroke-width: 3;
+}
+.site-group text {
+    font-size: 14px;
+    font-weight: bold;
+    pointer-events: none; /* 텍스트 클릭 방지 */
+}
+
+/* 요약 영역 */
+.summary-content {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* Flatpickr 달력 커스텀 스타일 */
+.flatpickr-day.selected, 
+.flatpickr-day.startRange, 
+.flatpickr-day.endRange, 
+.flatpickr-day.selected.inRange, 
+.flatpickr-day.startRange.inRange, 
+.flatpickr-day.endRange.inRange, 
+.flatpickr-day.selected:focus, 
+.flatpickr-day.startRange:focus, 
+.flatpickr-day.endRange:focus, 
+.flatpickr-day.selected:hover, 
+.flatpickr-day.startRange:hover, 
+.flatpickr-day.endRange:hover, 
+.flatpickr-day.prevMonthDay.selection.inRange, 
+.flatpickr-day.nextMonthDay.selection.inRange, 
+.flatpickr-day.selection.inRange {
+    background: var(--primary) !important; /* 캠핑장 포인트 컬러 적용 */
+    border-color: var(--primary) !important;
+}
+
+.flatpickr-months .flatpickr-month {
+    color: var(--primary-dark) !important;
+    fill: var(--primary-dark) !important;
 }

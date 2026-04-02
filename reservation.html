@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>실시간 예약 | 월촌캠핑장</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
 </head>
 <body>
 
@@ -74,12 +77,48 @@
 
     <main class="section">
     <div class="wrap">
-        <div class="section-title"><h2>Reservation</h2><p>날짜를 선택하여 예약을 진행해 주세요.</p><div class="line"></div></div>
-        <div style="background:#fff; padding:40px; border-radius:15px; border:1px solid #eee; text-align:center; min-height:400px;">
-            <div style="font-size:40px; color:var(--primary); margin-bottom:20px;"><i class="calendar-icon">📅</i></div>
-            <p>실시간 예약 달력 시스템 연동 영역입니다.</p>
-            <br>
-            <a href="#" class="btn btn-primary">오늘 날짜로 예약하기</a>
+        <div class="section-title">
+            <h2>Reservation</h2>
+            <p>날짜와 구역을 선택하여 예약을 진행해 주세요.</p>
+            <div class="line"></div>
+        </div>
+
+        <div id="step-calendar" class="res-card">
+            <h3>1. 날짜 선택</h3>
+            <div class="calendar-wrapper">
+                <input type="text" id="date-picker" placeholder="체크인 - 체크아웃 날짜를 선택하세요" readonly>
+            </div>
+        </div>
+
+        <div id="step-map" class="res-card" style="display:none; margin-top:50px;">
+            <h3>2. 구역 선택</h3>
+            <p class="map-guide">원하시는 캠핑 구역을 클릭해 주세요.</p>
+            <div class="map-container">
+                <svg viewBox="0 0 800 400" id="camping-map">
+                    <rect width="800" height="400" fill="#f0ede6" rx="15" />
+                    <g class="site-group" data-site="A-1">
+                        <rect x="100" y="100" width="80" height="80" class="site-rect" />
+                        <text x="140" y="145" text-anchor="middle" fill="white">A-1</text>
+                    </g>
+                    <g class="site-group" data-site="A-2">
+                        <rect x="200" y="100" width="80" height="80" class="site-rect" />
+                        <text x="240" y="145" text-anchor="middle" fill="white">A-2</text>
+                    </g>
+                    <g class="site-group" data-site="B-1">
+                        <rect x="500" y="100" width="80" height="80" class="site-rect" />
+                        <text x="540" y="145" text-anchor="middle" fill="white">B-1</text>
+                    </g>
+                    <path d="M 0 250 Q 400 200 800 250" stroke="#ddd" stroke-width="20" fill="none" />
+                </svg>
+            </div>
+        </div>
+
+        <div id="step-summary" class="res-card" style="display:none; margin-top:50px; background:var(--primary-dark); color:#fff;">
+            <div class="summary-content">
+                <p>선택 날짜: <span id="res-date-val">-</span></p>
+                <p>선택 구역: <span id="res-site-val">-</span></p>
+            </div>
+            <a href="confirm.html" class="btn btn-accent" style="margin-top:20px;">정보 입력하러 가기 →</a>
         </div>
     </div>
     </main>
