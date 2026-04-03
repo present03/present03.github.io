@@ -61,10 +61,20 @@ document.addEventListener('DOMContentLoaded', function () {
                             const allBookings = JSON.parse(localStorage.getItem('booked_sites_list')) || [];
                             allBookings.forEach(booking => {
                                 if (booking && booking.date) {
-                                    const bDates = booking.date.split(' ~ ').map(d => new Date(d));
-                                    if (bDates.length === 2 && selStart < bDates[1] && selEnd > bDates[0]) {
-                                        const target = document.querySelector(`.site-group[data-site="${booking.site}"]`);
-                                        if (target) { target.classList.add('booked'); target.style.pointerEvents = 'none'; }
+                                    const bDates = booking.date.split(' ~ ').map(d => {
+                                        const [y, m, day] = d.split('-').map(Number);
+                                        return new Date(y, m - 1, day, 0, 0, 0); // 로컬 시간 기준 00시로 생성
+                                    });
+
+                                    if (bDates.length === 2) {
+                                        // 퇴실일 당일 입실 허용 공식
+                                        if (selStart < bDates[1] && selEnd > bDates[0]) {
+                                            const target = document.querySelector(`.site-group[data-site="${booking.site}"]`);
+                                            if (target) {
+                                                target.classList.add('booked');
+                                                target.style.pointerEvents = 'none';
+                                            }
+                                        }
                                     }
                                 }
                             });
@@ -149,6 +159,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         status: "결제대기",
                         bookedAt: Date.now() // 타이머 시작 시간
                     };
+                    localStorage.setItem('temp_reservation', JSON.stringify(reservationData));
 
                     // 데이터 저장
                     let totalList = JSON.parse(localStorage.getItem('total_reservations')) || [];
@@ -172,10 +183,15 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         },
         // [Step 3] 3시간 타이머
+        /* --- [수정] main.js 내 handleStep3 함수를 아래 코드로 교체하세요 --- */
         handleStep3: function () {
             const countdownEl = document.getElementById('countdown');
+            const priceEl = document.getElementById('final-price'); // [추가] 금액 표시 요소 찾기
             const savedData = JSON.parse(localStorage.getItem('temp_reservation'));
+
             if (!savedData || !savedData.bookedAt || !countdownEl) return;
+
+            if (priceEl) priceEl.innerText = savedData.price;
 
             const limitTime = savedData.bookedAt + (3 * 60 * 60 * 1000);
             const timer = setInterval(() => {
@@ -190,7 +206,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 countdownEl.innerText = `${h}:${m}:${s}`;
             }, 1000);
         },
-
         displaySummary: function () {
             const d = document.getElementById('summary-date');
             const s = document.getElementById('summary-site');
