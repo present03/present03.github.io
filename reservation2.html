@@ -111,41 +111,33 @@
                             </div>
                             <div class="input-group">
                                 <label>연락처</label>
-                                <input type="tel" name="guest_phone" required placeholder="010-0000-0000" title="연락처를 입력해 주세요.">
+                                <input type="tel" name="guest_phone" required placeholder="010-0000-0000"
+                                    title="연락처를 입력해 주세요.">
                             </div>
                         </div>
                     </div>
-
                     <div class="form-section">
                         <h3>2. 이용 인원 및 차량</h3>
                         <div class="input-grid">
                             <div class="input-group">
-                                <label>성인 인원</label>
+                                <label>이용 인원</label>
                                 <select id="adult_count" name="adult_count">
                                     <option value="1">1명</option>
                                     <option value="2" selected>2명</option>
                                     <option value="3">3명</option>
                                     <option value="4">4명</option>
+                                    <option value="5">5명</option>
+                                    <option value="6">6명</option>
                                     <option value="manual">직접 입력</option>
                                 </select>
                                 <input type="number" id="adult_manual_input" class="manual-input"
                                     name="adult_count_manual" min="1" placeholder="인원수 입력" style="display:none;">
                             </div>
-                            <div class="input-group">
-                                <label>아동 인원 (초등생 이하)</label>
-                                <select id="child_count" name="child_count">
-                                    <option value="0">0명</option>
-                                    <option value="1">1명</option>
-                                    <option value="2">2명</option>
-                                    <option value="manual">직접 입력</option>
-                                </select>
-                                <input type="number" id="child_manual_input" class="manual-input"
-                                    name="child_count_manual" min="0" placeholder="인원수 입력" style="display:none;">
-                            </div>
+
                             <div class="input-group full-width">
-                                <label>차량 번호 (주차 등록용)</label>
-                                <input type="text" id="car_number" name="car_number" required placeholder="예: 12가 3456"
-                                    minlength="4" title="영어를 제외한 정확한 차량번호를 입력해주세요">
+                                <label>차량 번호 (선택 사항)</label>
+                                <input type="text" id="car_number" name="car_number"
+                                    placeholder="예: 12가 3456 (차량 방문 시 입력)">
                             </div>
                         </div>
                     </div>
@@ -175,17 +167,15 @@
                 <div>
                     <div class="footer-logo">🏕️ 월촌<span>캠핑장</span></div>
                     <div class="footer-info">
-                        <p>상호 : 월촌캠핑장 &nbsp;|&nbsp; 대표 : 홍길동</p>
-                        <p>주소 : 주소를 입력해주세요</p>
-                        <p>사업자번호 : 000-00-00000</p>
-                        <p>이메일 : email@example.com</p>
+                        <p>상호 : 월촌캠핑장 &nbsp;|&nbsp; 대표 : 김순용</p>
+                        <p>주소 : 경상남도 함안군 군복면 월촌3길 71-13 (군북면 월촌리 1365-2)</p>
+                        <p>사업자번호 : 567-03-00687</p>
                     </div>
                 </div>
                 <div class="footer-contact">
                     <h4>문의 및 예약</h4>
-                    <div class="phone">000-0000-0000</div>
+                    <div class="phone">010-3831-0330</div>
                     <p>상담시간 : 09:00 ~ 18:00</p>
-                    <p>주말에는 문자로 문의해주세요</p>
                 </div>
             </div>
             <div id="footer-bottom">
