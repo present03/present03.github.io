@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,7 @@
             overflow: hidden;
             background: var(--primary-dark);
         }
+
         .slide {
             position: absolute;
             inset: 0;
@@ -24,7 +26,10 @@
             align-items: center;
             justify-content: center;
         }
-        .slide.active { opacity: 1; }
+
+        .slide.active {
+            opacity: 1;
+        }
 
         .slide-bg {
             position: absolute;
@@ -34,12 +39,28 @@
             transform: scale(1.05);
             transition: transform 6s ease;
         }
-        .slide.active .slide-bg { transform: scale(1); }
+
+        .slide.active .slide-bg {
+            transform: scale(1);
+        }
 
         /* 슬라이드 배경색 (이미지 없을 때) */
-        .slide-1 .slide-bg { background: linear-gradient(135deg, #1a3a16 0%, #2d5a27 50%, #4a8a3f 100%); }
-        .slide-2 .slide-bg { background: linear-gradient(135deg, #1a3020 0%, #2d4a1e 50%, #3d6e2a 100%); }
-        .slide-3 .slide-bg { background: linear-gradient(135deg, #0d2010 0%, #1a3a16 50%, #2d5a27 100%); }
+        /* [수정 후] 사진을 1순위, 그라데이션을 2순위 백업으로 설정 */
+
+        .slide-1 .slide-bg {
+            background: url('images/mika.jpeg') no-repeat center/cover,
+                linear-gradient(135deg, #1a3a16 0%, #2d5a27 50%, #4a8a3f 100%);
+        }
+
+        .slide-2 .slide-bg {
+            background: url('images/nagisa.jpeg') no-repeat center/cover,
+                linear-gradient(135deg, #1a3020 0%, #2d4a1e 50%, #3d6e2a 100%);
+        }
+
+        .slide-3 .slide-bg {
+            background: url('images/sei.jpeg') no-repeat center/cover,
+                linear-gradient(135deg, #0d2010 0%, #1a3a16 50%, #2d5a27 100%);
+        }
 
         .slide-txt {
             position: relative;
@@ -47,6 +68,7 @@
             text-align: center;
             color: var(--white);
         }
+
         .slide-txt .tag {
             display: inline-block;
             background: var(--accent);
@@ -57,44 +79,59 @@
             font-weight: 500;
             margin-bottom: 20px;
         }
+
         .slide-txt h2 {
             font-size: 48px;
             font-weight: 700;
             line-height: 1.2;
             margin-bottom: 16px;
-            text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
         }
+
         .slide-txt p {
             font-size: 17px;
             opacity: 0.85;
             margin-bottom: 30px;
         }
+
         .slide-overlay {
             position: absolute;
             inset: 0;
-            background: rgba(0,0,0,0.35);
+            background: rgba(0, 0, 0, 0.35);
             z-index: 1;
         }
 
         /* 슬라이더 컨트롤 */
-        .slider-prev, .slider-next {
+        .slider-prev,
+        .slider-next {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
             z-index: 10;
-            background: rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0.15);
             border: none;
             color: var(--white);
-            width: 50px; height: 50px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             font-size: 20px;
             cursor: pointer;
             transition: background 0.2s;
             backdrop-filter: blur(5px);
         }
-        .slider-prev:hover, .slider-next:hover { background: rgba(255,255,255,0.3); }
-        .slider-prev { left: 25px; }
-        .slider-next { right: 25px; }
+
+        .slider-prev:hover,
+        .slider-next:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .slider-prev {
+            left: 25px;
+        }
+
+        .slider-next {
+            right: 25px;
+        }
 
         .slider-dots {
             position: absolute;
@@ -105,13 +142,16 @@
             gap: 8px;
             z-index: 10;
         }
+
         .dot {
-            width: 8px; height: 8px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.4);
+            background: rgba(255, 255, 255, 0.4);
             cursor: pointer;
             transition: all 0.3s;
         }
+
         .dot.active {
             background: var(--accent);
             width: 24px;
@@ -122,12 +162,14 @@
         #quick-links {
             background: var(--white);
             padding: 0;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
+
         .quick-wrap {
             display: flex;
             justify-content: center;
         }
+
         .quick-item {
             flex: 1;
             max-width: 200px;
@@ -139,14 +181,24 @@
             transition: all 0.2s;
             color: var(--text);
         }
-        .quick-item:last-child { border-right: none; }
+
+        .quick-item:last-child {
+            border-right: none;
+        }
+
         .quick-item:hover {
             background: var(--primary);
             color: var(--white);
         }
-        .quick-item:hover .quick-icon { background: rgba(255,255,255,0.2); color: var(--white); }
+
+        .quick-item:hover .quick-icon {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+        }
+
         .quick-icon {
-            width: 52px; height: 52px;
+            width: 52px;
+            height: 52px;
             background: var(--gray-light);
             border-radius: 50%;
             display: flex;
@@ -156,6 +208,7 @@
             margin-bottom: 10px;
             transition: all 0.2s;
         }
+
         .quick-item span {
             font-size: 13px;
             font-weight: 500;
@@ -166,12 +219,14 @@
             background: var(--bg);
             padding: 90px 0;
         }
+
         .intro-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 60px;
             align-items: center;
         }
+
         .intro-img {
             border-radius: 16px;
             overflow: hidden;
@@ -180,9 +235,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: rgba(255,255,255,0.5);
+            color: rgba(255, 255, 255, 0.5);
             font-size: 60px;
         }
+
         .intro-txt .tag {
             display: inline-block;
             background: var(--gray-light);
@@ -193,6 +249,7 @@
             font-weight: 500;
             margin-bottom: 16px;
         }
+
         .intro-txt h2 {
             font-size: 32px;
             font-weight: 700;
@@ -200,6 +257,7 @@
             margin-bottom: 18px;
             color: var(--primary-dark);
         }
+
         .intro-txt p {
             color: var(--text-light);
             line-height: 1.9;
@@ -211,41 +269,65 @@
             background: var(--primary);
             padding: 80px 0;
         }
-        #features .section-title h2 { color: var(--white); }
-        #features .section-title p { color: rgba(255,255,255,0.7); }
+
+        #features .section-title h2 {
+            color: var(--white);
+        }
+
+        #features .section-title p {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
         .feature-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 20px;
         }
+
         .feature-card {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 12px;
             padding: 30px 20px;
             text-align: center;
             color: var(--white);
             transition: all 0.3s;
         }
+
         .feature-card:hover {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             transform: translateY(-5px);
         }
-        .feature-icon { font-size: 36px; margin-bottom: 15px; }
-        .feature-card h4 { font-size: 16px; margin-bottom: 8px; }
-        .feature-card p { font-size: 13px; opacity: 0.75; line-height: 1.7; }
+
+        .feature-icon {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h4 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            font-size: 13px;
+            opacity: 0.75;
+            line-height: 1.7;
+        }
 
         /* ===== 공지사항 ===== */
         #notice-section {
             background: var(--white);
             padding: 80px 0;
         }
+
         .notice-wrap {
             display: grid;
             grid-template-columns: 1fr 320px;
             gap: 40px;
             align-items: start;
         }
+
         .notice-header {
             display: flex;
             justify-content: space-between;
@@ -254,13 +336,26 @@
             padding-bottom: 15px;
             border-bottom: 2px solid var(--primary);
         }
-        .notice-header h3 { font-size: 18px; color: var(--primary); }
-        .notice-header a { font-size: 13px; color: var(--gray); }
-        .notice-header a:hover { color: var(--primary); }
+
+        .notice-header h3 {
+            font-size: 18px;
+            color: var(--primary);
+        }
+
+        .notice-header a {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .notice-header a:hover {
+            color: var(--primary);
+        }
+
         .notice-list li {
             border-bottom: 1px solid #f0f0f0;
             padding: 14px 0;
         }
+
         .notice-list li a {
             display: flex;
             justify-content: space-between;
@@ -268,8 +363,16 @@
             font-size: 14px;
             color: var(--text);
         }
-        .notice-list li a:hover { color: var(--primary); }
-        .notice-list .date { font-size: 12px; color: var(--gray); }
+
+        .notice-list li a:hover {
+            color: var(--primary);
+        }
+
+        .notice-list .date {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
         .notice-list .badge {
             background: var(--primary);
             color: var(--white);
@@ -285,6 +388,7 @@
             border-radius: 12px;
             padding: 30px;
         }
+
         .contact-card h4 {
             font-size: 15px;
             color: var(--primary);
@@ -292,6 +396,7 @@
             padding-bottom: 12px;
             border-bottom: 1px solid #ddd;
         }
+
         .contact-item {
             display: flex;
             align-items: flex-start;
@@ -300,8 +405,17 @@
             font-size: 13px;
             color: var(--text-light);
         }
-        .contact-item .icon { font-size: 16px; }
-        .contact-item strong { display: block; color: var(--text); margin-bottom: 2px; }
+
+        .contact-item .icon {
+            font-size: 16px;
+        }
+
+        .contact-item strong {
+            display: block;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+
         .contact-phone {
             font-size: 22px;
             font-weight: 700;
@@ -312,281 +426,302 @@
 
         /* ===== 반응형 ===== */
         @media (max-width: 900px) {
-            .slide-txt h2 { font-size: 30px; }
-            .main-slider { height: 380px; }
-            .intro-grid { grid-template-columns: 1fr; gap: 30px; }
-            .feature-grid { grid-template-columns: repeat(2, 1fr); }
-            .notice-wrap { grid-template-columns: 1fr; }
-            .quick-item span { font-size: 12px; }
+            .slide-txt h2 {
+                font-size: 30px;
+            }
+
+            .main-slider {
+                height: 380px;
+            }
+
+            .intro-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .notice-wrap {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-item span {
+                font-size: 12px;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<!-- ===== 헤더 ===== -->
-<header id="header">
-    <div id="gnb">
+    <!-- ===== 헤더 ===== -->
+    <header id="header">
+        <div id="gnb">
+            <div class="wrap">
+                <div class="logo">
+                    <a href="index.html">🏕️ 월촌<span>캠핑장</span></a>
+                </div>
+                <nav id="main-nav">
+                    <button id="btn-menu-close">✕</button>
+                    <ul>
+                        <li>
+                            <a href="introduce.html">캠핑장 소개</a>
+                            <ul class="dropdown">
+                                <li><a href="introduce.html">인사말</a></li>
+                                <li><a href="rules.html">이용 수칙</a></li>
+                                <li><a href="map.html">오시는 길</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="facility.html">캠핑장 둘러보기</a>
+                            <ul class="dropdown">
+                                <li><a href="facility.html">시설 안내</a></li>
+                                <li><a href="sites.html">구역별 자리 안내</a></li>
+                                <li><a href="news.html">월촌의 소식('가칭')</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="rates.html">캠핑장 예약</a>
+                            <ul class="dropdown">
+                                <li><a href="rates.html">예약 / 요금 안내</a></li>
+                                <li><a href="reservation.html">실시간 예약</a></li>
+                                <li><a href="confirm.html">예약 확인 / 취소</a></li>
+                                <li><a href="refund.html">환불규정 / 유의사항</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="notice.html">커뮤니티</a>
+                            <ul class="dropdown">
+                                <li><a href="notice.html">공지사항</a></li>
+                                <li><a href="faq.html">자주 묻는 질문</a></li>
+                                <!-- 주석 처리할 내용 <li><a href="contact.html">문의하기</a></li>-->
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+                <div id="btn-menu">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== 메인 슬라이더 ===== -->
+    <div class="main-slider">
+        <div class="slide slide-1">
+            <div class="slide-bg"></div>
+            <div class="slide-overlay"></div>
+            <div class="slide-txt">
+                <span class="tag">🌿 자연 속 힐링</span>
+                <h2>월촌캠핑장에서<br>특별한 추억을 만드세요</h2>
+                <p>아름다운 자연과 함께하는 캠핑 라이프</p>
+                <a href="reservation.html" class="btn btn-accent">예약하기</a>
+            </div>
+        </div>
+        <div class="slide slide-2">
+            <div class="slide-bg"></div>
+            <div class="slide-overlay"></div>
+            <div class="slide-txt">
+                <span class="tag">⭐ 편리한 시설</span>
+                <h2>깨끗하고 쾌적한<br>캠핑 환경</h2>
+                <p>잘 정비된 시설에서 편안한 캠핑을</p>
+                <a href="facility.html" class="btn btn-accent">시설 보기</a>
+            </div>
+        </div>
+        <div class="slide slide-3">
+            <div class="slide-bg"></div>
+            <div class="slide-overlay"></div>
+            <div class="slide-txt">
+                <span class="tag">🏕️ 다양한 사이트</span>
+                <h2>나만의 공간에서<br>여유로운 시간을</h2>
+                <p>다양한 사이트 중 취향에 맞게 선택하세요</p>
+                <a href="sites.html" class="btn btn-accent">사이트 안내</a>
+            </div>
+        </div>
+
+        <button class="slider-prev">&#8249;</button>
+        <button class="slider-next">&#8250;</button>
+        <div class="slider-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+
+    <!-- ===== 바로가기 ===== -->
+    <div id="quick-links">
+        <div class="quick-wrap">
+            <a href="reservation.html" class="quick-item">
+                <div class="quick-icon">📅</div>
+                <span>예약하기</span>
+            </a>
+            <a href="rates.html" class="quick-item">
+                <div class="quick-icon">💰</div>
+                <span>요금 안내</span>
+            </a>
+            <a href="sites.html" class="quick-item">
+                <div class="quick-icon">🗺️</div>
+                <span>사이트 안내</span>
+            </a>
+            <a href="facility.html" class="quick-item">
+                <div class="quick-icon">🏕️</div>
+                <span>시설 소개</span>
+            </a>
+            <a href="notice.html" class="quick-item">
+                <div class="quick-icon">📢</div>
+                <span>공지사항</span>
+            </a>
+            <a href="map.html" class="quick-item">
+                <div class="quick-icon">📍</div>
+                <span>찾아오시는 길</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- ===== 캠핑장 소개 ===== -->
+    <section id="intro-section">
         <div class="wrap">
-            <div class="logo">
-                <a href="index.html">🏕️ 월촌<span>캠핑장</span></a>
-            </div>
-            <nav id="main-nav">
-                <button id="btn-menu-close">✕</button>
-                <ul>
-                    <li>
-                        <a href="introduce.html">캠핑장 소개</a>
-                        <ul class="dropdown">
-                            <li><a href="introduce.html">인사말</a></li>
-                            <li><a href="rules.html">이용 수칙</a></li>
-                            <li><a href="map.html">오시는 길</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="facility.html">캠핑장 둘러보기</a>
-                        <ul class="dropdown">
-                            <li><a href="facility.html">시설 안내</a></li>
-                            <li><a href="sites.html">구역별 자리 안내</a></li>
-                            <li><a href="news.html">월촌의 소식('가칭')</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="rates.html">캠핑장 예약</a>
-                        <ul class="dropdown">
-                            <li><a href="rates.html">예약 / 요금 안내</a></li>
-                            <li><a href="reservation.html">실시간 예약</a></li>
-                            <li><a href="confirm.html">예약 확인 / 취소</a></li>
-                            <li><a href="refund.html">환불규정 / 유의사항</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="notice.html">커뮤니티</a>
-                        <ul class="dropdown">
-                            <li><a href="notice.html">공지사항</a></li>
-                            <li><a href="faq.html">자주 묻는 질문</a></li>
-                            <!-- 주석 처리할 내용 <li><a href="contact.html">문의하기</a></li>-->
-                        </ul>
-                    </li>
-                </ul>
-            </nav>
-            <div id="btn-menu">
-                <span></span><span></span><span></span>
-            </div>
-        </div>
-    </div>
-</header>
-
-<!-- ===== 메인 슬라이더 ===== -->
-<div class="main-slider">
-    <div class="slide slide-1">
-        <div class="slide-bg"></div>
-        <div class="slide-overlay"></div>
-        <div class="slide-txt">
-            <span class="tag">🌿 자연 속 힐링</span>
-            <h2>월촌캠핑장에서<br>특별한 추억을 만드세요</h2>
-            <p>아름다운 자연과 함께하는 캠핑 라이프</p>
-            <a href="reservation.html" class="btn btn-accent">예약하기</a>
-        </div>
-    </div>
-    <div class="slide slide-2">
-        <div class="slide-bg"></div>
-        <div class="slide-overlay"></div>
-        <div class="slide-txt">
-            <span class="tag">⭐ 편리한 시설</span>
-            <h2>깨끗하고 쾌적한<br>캠핑 환경</h2>
-            <p>잘 정비된 시설에서 편안한 캠핑을</p>
-            <a href="facility.html" class="btn btn-accent">시설 보기</a>
-        </div>
-    </div>
-    <div class="slide slide-3">
-        <div class="slide-bg"></div>
-        <div class="slide-overlay"></div>
-        <div class="slide-txt">
-            <span class="tag">🏕️ 다양한 사이트</span>
-            <h2>나만의 공간에서<br>여유로운 시간을</h2>
-            <p>다양한 사이트 중 취향에 맞게 선택하세요</p>
-            <a href="sites.html" class="btn btn-accent">사이트 안내</a>
-        </div>
-    </div>
-
-    <button class="slider-prev">&#8249;</button>
-    <button class="slider-next">&#8250;</button>
-    <div class="slider-dots">
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-    </div>
-</div>
-
-<!-- ===== 바로가기 ===== -->
-<div id="quick-links">
-    <div class="quick-wrap">
-        <a href="reservation.html" class="quick-item">
-            <div class="quick-icon">📅</div>
-            <span>예약하기</span>
-        </a>
-        <a href="rates.html" class="quick-item">
-            <div class="quick-icon">💰</div>
-            <span>요금 안내</span>
-        </a>
-        <a href="sites.html" class="quick-item">
-            <div class="quick-icon">🗺️</div>
-            <span>사이트 안내</span>
-        </a>
-        <a href="facility.html" class="quick-item">
-            <div class="quick-icon">🏕️</div>
-            <span>시설 소개</span>
-        </a>
-        <a href="notice.html" class="quick-item">
-            <div class="quick-icon">📢</div>
-            <span>공지사항</span>
-        </a>
-        <a href="map.html" class="quick-item">
-            <div class="quick-icon">📍</div>
-            <span>찾아오시는 길</span>
-        </a>
-    </div>
-</div>
-
-<!-- ===== 캠핑장 소개 ===== -->
-<section id="intro-section">
-    <div class="wrap">
-        <div class="intro-grid">
-            <div class="intro-img">🌲</div>
-            <div class="intro-txt">
-                <span class="tag">ABOUT US</span>
-                <h2>자연이 살아있는<br>월촌캠핑장</h2>
-                <p>
-                    월촌캠핑장은 아름다운 자연 속에 위치한 오토캠핑장입니다.
-                    깨끗한 공기와 맑은 물이 있는 곳에서 도심의 일상을 벗어나
-                    특별한 캠핑 경험을 즐기실 수 있습니다.
-                </p>
-                <p>
-                    잘 정비된 사이트와 편의시설을 갖추고 있어
-                    초보 캠퍼부터 베테랑 캠퍼까지 모두 만족하실 수 있습니다.
-                </p>
-                <a href="introduce.html" class="btn btn-primary">캠핑장 소개 보기</a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ===== 특징 ===== -->
-<section id="features">
-    <div class="wrap">
-        <div class="section-title">
-            <h2>월촌캠핑장의 특징</h2>
-            <p>편안하고 즐거운 캠핑을 위한 모든 것</p>
-            <div class="line"></div>
-        </div>
-        <div class="feature-grid">
-            <div class="feature-card">
-                <div class="feature-icon">🌿</div>
-                <h4>자연 친화 환경</h4>
-                <p>아름다운 자연 속에서 힐링할 수 있는 최적의 환경</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🚿</div>
-                <h4>깨끗한 편의시설</h4>
-                <p>청결하게 관리되는 샤워실, 화장실, 취사장</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🔌</div>
-                <h4>전기 사이트</h4>
-                <p>전기 연결이 가능한 사이트로 편리한 캠핑 가능</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🚗</div>
-                <h4>오토캠핑</h4>
-                <p>차량과 함께하는 편리한 오토캠핑 사이트 운영</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ===== 공지사항 ===== -->
-<section id="notice-section">
-    <div class="wrap">
-        <div class="notice-wrap">
-            <div>
-                <div class="notice-header">
-                    <h3>📢 공지사항</h3>
-                    <a href="notice.html">전체보기 →</a>
+            <div class="intro-grid">
+                <div class="intro-img">🌲</div>
+                <div class="intro-txt">
+                    <span class="tag">ABOUT US</span>
+                    <h2>자연이 살아있는<br>월촌캠핑장</h2>
+                    <p>
+                        월촌캠핑장은 아름다운 자연 속에 위치한 오토캠핑장입니다.
+                        깨끗한 공기와 맑은 물이 있는 곳에서 도심의 일상을 벗어나
+                        특별한 캠핑 경험을 즐기실 수 있습니다.
+                    </p>
+                    <p>
+                        잘 정비된 사이트와 편의시설을 갖추고 있어
+                        초보 캠퍼부터 베테랑 캠퍼까지 모두 만족하실 수 있습니다.
+                    </p>
+                    <a href="introduce.html" class="btn btn-primary">캠핑장 소개 보기</a>
                 </div>
-                <ul class="notice-list">
-                    <li>
-                        <a href="notice.html">
-                            <span><span class="badge">공지</span>캠핑장 이용안내문 (필독)</span>
-                            <span class="date">2026.03.27</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="notice.html">
-                            <span>하절기 운영시간 변경 안내</span>
-                            <span class="date">2026.02.10</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="notice.html">
-                            <span>시설 정기점검 안내</span>
-                            <span class="date">2026.01.15</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="notice.html">
-                            <span>예약 시스템 변경 안내</span>
-                            <span class="date">2025.12.01</span>
-                        </a>
-                    </li>
-                </ul>
             </div>
+        </div>
+    </section>
 
-            <div class="contact-card">
-                <h4>📞 문의 및 예약</h4>
-                <div class="contact-phone">010-3831-0330</div>
-                <div class="contact-item">
-                    <span class="icon">🕐</span>
-                    <div>
-                        <strong>상담시간</strong>
-                        오전 9시 ~ 오후 6시
+    <!-- ===== 특징 ===== -->
+    <section id="features">
+        <div class="wrap">
+            <div class="section-title">
+                <h2>월촌캠핑장의 특징</h2>
+                <p>편안하고 즐거운 캠핑을 위한 모든 것</p>
+                <div class="line"></div>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🌿</div>
+                    <h4>자연 친화 환경</h4>
+                    <p>아름다운 자연 속에서 힐링할 수 있는 최적의 환경</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚿</div>
+                    <h4>깨끗한 편의시설</h4>
+                    <p>청결하게 관리되는 샤워실, 화장실, 취사장</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔌</div>
+                    <h4>전기 사이트</h4>
+                    <p>전기 연결이 가능한 사이트로 편리한 캠핑 가능</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚗</div>
+                    <h4>오토캠핑</h4>
+                    <p>차량과 함께하는 편리한 오토캠핑 사이트 운영</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 공지사항 ===== -->
+    <section id="notice-section">
+        <div class="wrap">
+            <div class="notice-wrap">
+                <div>
+                    <div class="notice-header">
+                        <h3>📢 공지사항</h3>
+                        <a href="notice.html">전체보기 →</a>
+                    </div>
+                    <ul class="notice-list">
+                        <li>
+                            <a href="notice.html">
+                                <span><span class="badge">공지</span>캠핑장 이용안내문 (필독)</span>
+                                <span class="date">2026.03.27</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="notice.html">
+                                <span>하절기 운영시간 변경 안내</span>
+                                <span class="date">2026.02.10</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="notice.html">
+                                <span>시설 정기점검 안내</span>
+                                <span class="date">2026.01.15</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="notice.html">
+                                <span>예약 시스템 변경 안내</span>
+                                <span class="date">2025.12.01</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="contact-card">
+                    <h4>📞 문의 및 예약</h4>
+                    <div class="contact-phone">010-3831-0330</div>
+                    <div class="contact-item">
+                        <span class="icon">🕐</span>
+                        <div>
+                            <strong>상담시간</strong>
+                            오전 9시 ~ 오후 6시
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="icon">📍</span>
+                        <div>
+                            <strong>주소</strong>
+                            경상남도 함안군 군복면 월촌3길 71-13 (군북면 월촌리 1365-2)
+                        </div>
+                    </div>
+                    <a href="reservation.html" class="btn btn-primary"
+                        style="width:100%;text-align:center;margin-top:15px;">예약하기</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 푸터 ===== -->
+    <footer id="footer">
+        <div class="wrap">
+            <div id="footer-top">
+                <div>
+                    <div class="footer-logo">🏕️ 월촌<span>캠핑장</span></div>
+                    <div class="footer-info">
+                        <p>상호 : 월촌캠핑장 &nbsp;|&nbsp; 대표 : 김순용</p>
+                        <p>주소 : 경상남도 함안군 군복면 월촌3길 71-13 (군북면 월촌리 1365-2)</p>
+                        <p>사업자번호 : 567-03-00687</p>
                     </div>
                 </div>
-                <div class="contact-item">
-                    <span class="icon">📍</span>
-                    <div>
-                        <strong>주소</strong>
-                        경상남도 함안군 군복면 월촌3길 71-13 (군북면 월촌리 1365-2)
-                    </div>
-                </div>
-                <a href="reservation.html" class="btn btn-primary" style="width:100%;text-align:center;margin-top:15px;">예약하기</a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ===== 푸터 ===== -->
-<footer id="footer">
-    <div class="wrap">
-        <div id="footer-top">
-            <div>
-                <div class="footer-logo">🏕️ 월촌<span>캠핑장</span></div>
-                <div class="footer-info">
-                    <p>상호 : 월촌캠핑장 &nbsp;|&nbsp; 대표 : 김순용</p>
-                    <p>주소 : 경상남도 함안군 군복면 월촌3길 71-13 (군북면 월촌리 1365-2)</p>
-                    <p>사업자번호 : 567-03-00687</p>
+                <div class="footer-contact">
+                    <h4>문의 및 예약</h4>
+                    <div class="phone">010-3831-0330</div>
+                    <p>상담시간 : 09:00 ~ 18:00</p>
                 </div>
             </div>
-            <div class="footer-contact">
-                <h4>문의 및 예약</h4>
-                <div class="phone">010-3831-0330</div>
-                <p>상담시간 : 09:00 ~ 18:00</p>
+            <div id="footer-bottom">
+                <p>Copyright © 2026 월촌캠핑장. All Rights Reserved.</p>
             </div>
         </div>
-        <div id="footer-bottom">
-            <p>Copyright © 2026 월촌캠핑장. All Rights Reserved.</p>
-        </div>
-    </div>
-</footer>
+    </footer>
 
-<script src="js/main.js"></script>
+    <script src="js/main.js"></script>
 </body>
+
 </html>
