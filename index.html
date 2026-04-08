@@ -48,17 +48,17 @@
         /* [수정 후] 사진을 1순위, 그라데이션을 2순위 백업으로 설정 */
 
         .slide-1 .slide-bg {
-            background: url('images/') no-repeat center/cover,
+            background: url('images/ko.jpeg') no-repeat center/cover,
                 linear-gradient(135deg, #1a3a16 0%, #2d5a27 50%, #4a8a3f 100%);
         }
 
         .slide-2 .slide-bg {
-            background: url('images/') no-repeat center/cover,
+            background: url('images/ko.jpeg') no-repeat center/cover,
                 linear-gradient(135deg, #1a3020 0%, #2d4a1e 50%, #3d6e2a 100%);
         }
 
         .slide-3 .slide-bg {
-            background: url('images/') no-repeat center/cover,
+            background: url('images/ko.jpeg') no-repeat center/cover,
                 linear-gradient(135deg, #0d2010 0%, #1a3a16 50%, #2d5a27 100%);
         }
 
@@ -266,7 +266,8 @@
 
         /* ===== 특징 카드 ===== */
         #features {
-            background: var(--primary);
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                url('images/ko.jpeg') no-repeat center/cover;
             padding: 80px 0;
         }
 
@@ -510,6 +511,7 @@
 
     <!-- ===== 메인 슬라이더 ===== -->
     <div class="main-slider">
+
         <div class="slide slide-1">
             <div class="slide-bg"></div>
             <div class="slide-overlay"></div>
@@ -584,7 +586,7 @@
     <section id="intro-section">
         <div class="wrap">
             <div class="intro-grid">
-                <div class="intro-img">🌲</div>
+                <div class="intro-img" style="background: url('images/ko.jpeg') no-repeat center/cover;"></div>
                 <div class="intro-txt">
                     <span class="tag">ABOUT US</span>
                     <h2>자연이 살아있는<br>월촌캠핑장</h2>
@@ -613,22 +615,30 @@
             </div>
             <div class="feature-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">🌿</div>
+                    <div class="feature-icon">
+                        <img src="images/ko.jpeg" style="width: 50px; height: 50px; object-fit: contain;">
+                    </div>
                     <h4>자연 친화 환경</h4>
                     <p>아름다운 자연 속에서 힐링할 수 있는 최적의 환경</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🚿</div>
+                    <div class="feature-icon">
+                        <img src="images/ko.jpeg" style="width: 50px; height: 50px; object-fit: contain;">
+                    </div>
                     <h4>깨끗한 편의시설</h4>
                     <p>청결하게 관리되는 샤워실, 화장실, 취사장</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🔌</div>
+                    <div class="feature-icon">
+                        <img src="images/ko.jpeg" style="width: 50px; height: 50px; object-fit: contain;">
+                    </div>
                     <h4>전기 사이트</h4>
                     <p>전기 연결이 가능한 사이트로 편리한 캠핑 가능</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🚗</div>
+                    <div class="feature-icon">
+                        <img src="images/ko.jpeg" style="width: 50px; height: 50px; object-fit: contain;">
+                    </div>
                     <h4>오토캠핑</h4>
                     <p>차량과 함께하는 편리한 오토캠핑 사이트 운영</p>
                 </div>
