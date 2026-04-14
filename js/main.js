@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: block });
         },
 
-        // [Step 1] 날짜 및 구역 선택
+        // [Step 1] 날짜 및 구역 선택   
         handleStep1: function () {
             const calendarEl = document.getElementById('inline-calendar');
             if (!calendarEl) return;
@@ -308,26 +308,37 @@ document.addEventListener('DOMContentLoaded', function () {
             const btn = document.getElementById('btn-check-res');
             if (!btn) return;
 
+            // 전역에서 취소 함수를 호출할 수 있도록 연결
+            window.ResManager = this;
+
             btn.addEventListener('click', () => {
                 const name = document.getElementById('check-name').value.trim();
                 const phone = document.getElementById('check-phone').value.trim();
-                const container = document.getElementById('res-list-container'); // confirm.html에 추가한 id
+                const container = document.getElementById('res-list-container');
                 const resultArea = document.getElementById('confirm-result');
 
                 if (!name || !phone) return alert("정보를 모두 입력해 주세요.");
 
-                // [핵심] 통합 장부에서 일치하는 모든 내역 필터링
                 const totalRes = JSON.parse(localStorage.getItem('total_reservations')) || [];
                 const matches = totalRes.filter(r => r.name === name && r.phone === phone);
 
                 if (matches.length > 0) {
-                    container.innerHTML = ""; // 이전 결과 초기화
+                    container.innerHTML = "";
 
                     matches.forEach(data => {
                         const card = document.createElement('div');
                         card.style = "background:#f9f9f9; padding:20px; border-radius:10px; line-height:1.8; font-size:0.95rem; margin-bottom:15px; border:1px solid #eee; text-align:left;";
 
-                        // 결제 대기 시 마감 시간 계산
+                        // 1. 취소 버튼 생성 (결제대기 상태일 때만)
+                        let cancelBtnHtml = "";
+                        if (data.status === "결제대기") {
+                            cancelBtnHtml = `
+                        <button onclick="ResManager.deleteReservation(${data.bookedAt}, '${data.date}', '${data.site}')"
+                                style="margin-top:15px; width:100%; padding:10px; background:#fff; border:1px solid #e74c3c; color:#e74c3c; border-radius:6px; cursor:pointer; font-weight:bold;">
+                            예약 취소하기 (입금 전)
+                        </button>`;
+                        }
+
                         let deadlineHtml = "";
                         if (data.status === "결제대기" && data.bookedAt) {
                             const limit = data.bookedAt + (3 * 60 * 60 * 1000);
@@ -342,22 +353,36 @@ document.addEventListener('DOMContentLoaded', function () {
                     <p><strong>결제금액:</strong> ${data.price}</p>
                     <p><strong>예약상태:</strong> <span style="font-weight:bold; color:${data.status === "예약완료" ? "#2ecc71" : "#e74c3c"}">${data.status}</span></p>
                     ${deadlineHtml}
+                    ${cancelBtnHtml}
                 `;
                         container.appendChild(card);
                     });
 
                     resultArea.style.display = 'block';
-
-                    // [추가] 조회 결과창으로 부드럽게 자동 스크롤
-                    setTimeout(() => {
-                        resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 100);
-
+                    setTimeout(() => { resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
                 } else {
                     alert("일치하는 예약 정보를 찾을 수 없습니다.");
                     resultArea.style.display = 'none';
                 }
             });
+        },
+
+        // 예약 취소 실행 함수
+        deleteReservation: function (bookedAt, date, site) {
+            if (confirm(`${date} [${site}] 예약을 취소하시겠습니까?\n취소 시 해당 슬롯은 즉시 개방됩니다.`)) {
+                // 1. 전체 장부에서 삭제
+                let total = JSON.parse(localStorage.getItem('total_reservations')) || [];
+                total = total.filter(r => r.bookedAt !== bookedAt);
+                localStorage.setItem('total_reservations', JSON.stringify(total));
+
+                // 2. 지도 예약 현황(중복 체크용)에서 삭제
+                let bookedList = JSON.parse(localStorage.getItem('booked_sites_list')) || [];
+                bookedList = bookedList.filter(b => !(b.date === date && b.site === site));
+                localStorage.setItem('booked_sites_list', JSON.stringify(bookedList));
+
+                alert("예약이 정상적으로 취소되었습니다.");
+                location.reload(); // 화면 새로고침하여 반영
+            }
         },
         formatTime: function (ts) {
             const d = new Date(ts);
@@ -371,33 +396,58 @@ document.addEventListener('DOMContentLoaded', function () {
     ResManager.init();
     NoticeManager.init();
 });
-/* --- NoticeManager: 관리자 기능 및 페이지 이동형으로 변경 --- */
+
+/* --- main.js : NoticeManager 부분 업데이트 --- */
 window.NoticeManager = {
-    // 1. 초기 기본 데이터 (장부가 비어있을 때만 사용)
     defaultData: [
-        { id: 101, isFixed: true, title: "월촌캠핑장 이용 전 필독사항 안내", date: "2026-03-31", content: "매너타임 준수 부탁드립니다." },
-        { id: 1, isFixed: false, title: "4월 주말 예약 조기 마감 안내", date: "2026-03-28", content: "평일 예약은 가능합니다." }
+        { id: 101, isFixed: true, title: "월촌캠핑장 이용 전 필독사항 안내", date: "2026.03.31", content: "매너타임 준수 부탁드립니다." },
+        { id: 1, isFixed: false, title: "4월 주말 예약 조기 마감 안내", date: "2026.03.28", content: "평일 예약은 가능합니다." }
     ],
 
     init: function () {
-        // 장부에 데이터가 없으면 기본 데이터를 채워넣음 (최초 1회)
         if (!localStorage.getItem('camping_notices')) {
             localStorage.setItem('camping_notices', JSON.stringify(this.defaultData));
         }
 
+        // 1. 공지사항 페이지 목록 렌더링
         const body = document.getElementById('notice-list-body');
         if (body) this.renderList(body);
 
-        // 상세보기 페이지일 경우 실행
+        // 2. 메인 페이지 공지사항 목록 렌더링 (추가)
+        const mainList = document.getElementById('main-notice-list');
+        if (mainList) this.renderMainList(mainList);
+
         if (document.getElementById('notice-view-content')) {
             this.renderView();
         }
     },
 
-    // 2. 목록 출력: 이제 클릭 시 notice_view.html로 이동합니다
+    // 메인 페이지용 상단 5개 렌더링 함수
+    renderMainList: function (target) {
+        const notices = JSON.parse(localStorage.getItem('camping_notices')) || [];
+        
+        // 정렬: 필독(isFixed) 우선 -> 그 다음 ID 내림차순 (최신순)
+        const sorted = notices.sort((a, b) => (b.isFixed - a.isFixed) || (b.id - a.id));
+        
+        // 상단 5개만 추출
+        const mainDisplay = sorted.slice(0, 5);
+
+        target.innerHTML = mainDisplay.map(n => `
+            <li>
+                <a href="notice_view.html?id=${n.id}">
+                    <span>
+                        ${n.isFixed ? '<span class="badge">필독</span>' : ''}
+                        ${n.title}
+                    </span>
+                    <span class="date">${n.date.replace(/-/g, '.')}</span>
+                </a>
+            </li>
+        `).join('');
+    },
+
+    // 기존 리스트 렌더링 (notice.html용)
     renderList: function (target) {
         const notices = JSON.parse(localStorage.getItem('camping_notices')) || [];
-        // 최신순 정렬 (필독 공지는 위로)
         const sorted = notices.sort((a, b) => (b.isFixed - a.isFixed) || (b.id - a.id));
 
         target.innerHTML = sorted.map((n, idx) => `
@@ -414,7 +464,6 @@ window.NoticeManager = {
         `).join('');
     },
 
-    // 3. 상세보기 페이지 전용 렌더링
     renderView: function () {
         const params = new URLSearchParams(window.location.search);
         const id = parseInt(params.get('id'));
@@ -425,9 +474,6 @@ window.NoticeManager = {
             document.getElementById('view-title').innerText = item.title;
             document.getElementById('view-date').innerText = item.date;
             document.getElementById('view-content').innerText = item.content;
-        } else {
-            alert("존재하지 않는 게시글입니다.");
-            location.href = 'notice.html';
         }
     }
 };
