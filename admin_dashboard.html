@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 메인 | 월촌캠핑장</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        body {
+            background: #f4f6f3;
+        }
+
+        .admin-layout {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .admin-sidebar {
+            width: 250px;
+            background: var(--primary-dark);
+            color: #fff;
+            padding: 30px 22px;
+        }
+
+        .admin-logo {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 35px;
+        }
+
+        .admin-logo span {
+            color: var(--accent);
+        }
+
+        .admin-menu a {
+            display: block;
+            padding: 13px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.85);
+            transition: 0.2s;
+        }
+
+        .admin-menu a:hover,
+        .admin-menu a.active {
+            background: rgba(255, 255, 255, 0.13);
+            color: #fff;
+        }
+
+        .admin-main {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .admin-header {
+            margin-bottom: 30px;
+        }
+
+        .admin-header h1 {
+            color: var(--primary-dark);
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .admin-header p {
+            color: var(--text-light);
+        }
+
+        .admin-card-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 35px;
+        }
+
+        .admin-card {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 14px;
+            padding: 25px;
+        }
+
+        .admin-card h3 {
+            color: var(--text-light);
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+
+        .admin-card .count {
+            font-size: 34px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .admin-section {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 14px;
+            padding: 30px;
+        }
+
+        .admin-section h2 {
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+        }
+
+        .admin-link-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .admin-link-card {
+            display: block;
+            padding: 24px;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            background: #fafafa;
+            transition: 0.2s;
+        }
+
+        .admin-link-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+            background: #fff;
+        }
+
+        .admin-link-card strong {
+            display: block;
+            font-size: 18px;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+
+        .admin-link-card span {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        @media (max-width: 900px) {
+            .admin-layout {
+                display: block;
+            }
+
+            .admin-sidebar {
+                width: 100%;
+            }
+
+            .admin-card-grid,
+            .admin-link-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-main {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="admin-logo">🏕️ 월촌<span>관리자</span></div>
+
+            <nav class="admin-menu">
+                <a href="admin_dashboard.html" class="active">관리자 메인</a>
+                <a href="admin_notice.html">공지사항 관리</a>
+                <a href="admin_qna.html">문의/Q&A 관리</a>
+                <a href="admin_faq.html">FAQ 관리</a>
+                <a href="index.html">홈페이지 보기</a>
+                <a href="#" onclick="window.AdminAuth.logout(); return false;">로그아웃</a>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1>관리자 메인</h1>
+                <p>월촌캠핑장 홈페이지의 공지사항, 문의글, FAQ를 관리합니다.</p>
+            </div>
+
+            <section class="admin-card-grid">
+                <div class="admin-card">
+                    <h3>공지사항</h3>
+                    <div class="count" id="notice-count">0</div>
+                </div>
+
+                <div class="admin-card">
+                    <h3>문의글</h3>
+                    <div class="count" id="qna-count">0</div>
+                </div>
+
+                <div class="admin-card">
+                    <h3>FAQ</h3>
+                    <div class="count" id="faq-count">0</div>
+                </div>
+            </section>
+
+            <section class="admin-section">
+                <h2>관리 메뉴</h2>
+
+                <div class="admin-link-grid">
+                    <a href="admin_notice.html" class="admin-link-card">
+                        <strong>공지사항 관리</strong>
+                        <span>공지 등록, 삭제, 필독 공지 설정</span>
+                    </a>
+
+                    <a href="admin_qna.html" class="admin-link-card">
+                        <strong>문의/Q&A 관리</strong>
+                        <span>고객 문의 확인 및 관리자 답변 작성</span>
+                    </a>
+
+                    <a href="admin_faq.html" class="admin-link-card">
+                        <strong>FAQ 관리</strong>
+                        <span>자주 묻는 질문 등록 및 삭제</span>
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const notices = JSON.parse(localStorage.getItem('camping_notices')) || [];
+        const qnaPosts = JSON.parse(localStorage.getItem('camping_qna_posts')) || [];
+        const faqs = JSON.parse(localStorage.getItem('camping_faqs')) || [];
+
+        document.getElementById('notice-count').innerText = notices.length;
+        document.getElementById('qna-count').innerText = qnaPosts.length;
+        document.getElementById('faq-count').innerText = faqs.length;
+    </script>
+    <script src="js/admin-auth.js"></script>
+</body>
+
+</html>

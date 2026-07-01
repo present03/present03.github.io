@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문의/Q&A 관리 | 월촌캠핑장</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar" id="admin-sidebar"></aside>
+
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1>문의/Q&A 관리</h1>
+                <p>방문자가 남긴 문의글에 답변을 등록합니다.</p>
+            </div>
+
+            <section class="admin-panel">
+                <h2>문의글 목록</h2>
+
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th style="width:80px;">번호</th>
+                            <th style="width:120px;">상태</th>
+                            <th>제목</th>
+                            <th style="width:120px;">작성자</th>
+                            <th style="width:150px;">날짜</th>
+                            <th style="width:120px;">관리</th>
+                        </tr>
+                    </thead>
+                    <tbody id="qna-admin-list"></tbody>
+                </table>
+
+                <div id="qna-admin-detail" class="admin-detail-box"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/admin-auth.js"></script>
+    <script src="js/admin-layout.js"></script>
+</body>
+
+</html>

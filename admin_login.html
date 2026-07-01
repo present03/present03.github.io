@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 로그인 | 월촌캠핑장</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: #fff;
+            padding: 45px 40px;
+            border-radius: 18px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+        }
+
+        .login-card h1 {
+            color: var(--primary-dark);
+            font-size: 28px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .login-card p {
+            color: var(--text-light);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 14px;
+            font-size: 15px;
+        }
+
+        .login-card input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .login-card .btn {
+            width: 100%;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-card">
+        <h1>🏕️ 월촌캠핑장 관리자</h1>
+        <p>관리자 계정으로 로그인해주세요.</p>
+
+        <form id="admin-login-form">
+            <input type="text" id="admin-id" placeholder="아이디" required>
+            <input type="password" id="admin-password" placeholder="비밀번호" required>
+
+            <button type="submit" class="btn btn-primary">로그인</button>
+        </form>
+
+        <a href="index.html" class="back-link">홈페이지로 돌아가기</a>
+    </div>
+    <script src="js/main.js"></script>
+    <script src="js/admin-auth.js"></script>
+</body>
+
+</html>

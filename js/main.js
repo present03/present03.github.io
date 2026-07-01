@@ -394,7 +394,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     CampingUI.init();
     ResManager.init();
-    window.NoticeManager.init();
+    //window.NoticeManager.init();
 });
 
 /* ==========================================
@@ -405,24 +405,7 @@ document.addEventListener('DOMContentLoaded', function () {
 window.NoticeDB = {
     storageKey: 'camping_notices',
 
-    defaultData: [
-        {
-            id: 101,
-            isFixed: true,
-            title: "월촌캠핑장 이용 전 필독사항 안내",
-            date: "2026.03.31",
-            author: "관리자",
-            content: "매너타임 준수 부탁드립니다."
-        },
-        {
-            id: 1,
-            isFixed: false,
-            title: "4월 주말 예약 조기 마감 안내",
-            date: "2026.03.28",
-            author: "관리자",
-            content: "평일 예약은 가능합니다."
-        }
-    ],
+    defaultData: [],
 
     // 공지 목록 불러오기
     async getAll() {
@@ -629,3 +612,495 @@ window.NoticeManager = {
         location.reload();
     }
 };
+
+document.addEventListener('DOMContentLoaded', function () {
+    if (window.NoticeManager) {
+        window.NoticeManager.init();
+    }
+});
+
+/* ==========================================
+   Q&A 저장소
+   - 현재: localStorage 사용
+   - 나중에 서버/DB 연결 시 QnaDB만 교체
+   ========================================== */
+window.QnaDB = {
+    storageKey: 'camping_qna_posts',
+
+    async getAll() {
+        const savedData = localStorage.getItem(this.storageKey);
+        return savedData ? JSON.parse(savedData) : [];
+    },
+
+    async getById(id) {
+        const posts = await this.getAll();
+        return posts.find(post => post.id === Number(id));
+    },
+
+    async create(postData) {
+        const posts = await this.getAll();
+
+        const nextId = posts.length > 0
+            ? Math.max(...posts.map(post => post.id)) + 1
+            : 1;
+
+        const today = new Date().toISOString().slice(0, 10).replace(/-/g, '.');
+
+        const newPost = {
+            id: nextId,
+            title: postData.title,
+            name: postData.name,
+            phone: postData.phone,
+            password: postData.password,
+            content: postData.content,
+            date: today,
+            status: "답변대기",
+            reply: null,
+            createdAt: Date.now()
+        };
+
+        posts.push(newPost);
+        localStorage.setItem(this.storageKey, JSON.stringify(posts));
+
+        return newPost;
+    },
+
+    async saveReply(id, replyContent) {
+        const posts = await this.getAll();
+        const today = new Date().toISOString().slice(0, 10).replace(/-/g, '.');
+
+        const updatedPosts = posts.map(post => {
+            if (post.id === Number(id)) {
+                return {
+                    ...post,
+                    status: "답변완료",
+                    reply: {
+                        content: replyContent,
+                        date: today,
+                        author: "관리자"
+                    }
+                };
+            }
+            return post;
+        });
+
+        localStorage.setItem(this.storageKey, JSON.stringify(updatedPosts));
+        return true;
+    },
+
+    async delete(id) {
+        const posts = await this.getAll();
+        const filteredPosts = posts.filter(post => post.id !== Number(id));
+
+        localStorage.setItem(this.storageKey, JSON.stringify(filteredPosts));
+        return true;
+    }
+};
+
+
+/* ==========================================
+   Q&A 화면 관리자
+   ========================================== */
+window.QnaManager = {
+    init: async function () {
+        const listBody = document.getElementById('qna-list-body');
+        const writeForm = document.getElementById('qna-write-form');
+        const viewTitle = document.getElementById('qna-view-title');
+        const adminList = document.getElementById('qna-admin-list');
+
+        if (listBody) await this.renderList(listBody);
+        if (writeForm) this.bindWriteForm(writeForm);
+        if (viewTitle) await this.renderView();
+        if (adminList) await this.renderAdminList(adminList);
+    },
+
+    escapeHtml: function (text) {
+        return String(text || '')
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
+    },
+
+    sortPosts: function (posts) {
+        return [...posts].sort((a, b) => b.id - a.id);
+    },
+
+    renderList: async function (target) {
+        const posts = await window.QnaDB.getAll();
+        const sorted = this.sortPosts(posts);
+
+        if (sorted.length === 0) {
+            target.innerHTML = `
+                <tr>
+                    <td colspan="5">등록된 문의글이 없습니다.</td>
+                </tr>
+            `;
+            return;
+        }
+
+        target.innerHTML = sorted.map((post, index) => `
+            <tr>
+                <td>${sorted.length - index}</td>
+                <td>
+                    <span style="font-weight:bold; color:${post.status === '답변완료' ? 'var(--primary)' : '#e74c3c'};">
+                        ${this.escapeHtml(post.status)}
+                    </span>
+                </td>
+                <td class="title">
+                    <a href="contact_view.html?id=${post.id}">
+                        ${this.escapeHtml(post.title)}
+                    </a>
+                </td>
+                <td>${this.escapeHtml(post.name)}</td>
+                <td>${this.escapeHtml(post.date)}</td>
+            </tr>
+        `).join('');
+    },
+
+    bindWriteForm: function (form) {
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const title = document.getElementById('qna-title').value.trim();
+            const name = document.getElementById('qna-name').value.trim();
+            const phone = document.getElementById('qna-phone').value.trim();
+            const password = document.getElementById('qna-password').value.trim();
+            const content = document.getElementById('qna-content').value.trim();
+            const privacy = document.getElementById('qna-privacy').checked;
+
+            if (!title || !name || !phone || !password || !content) {
+                alert("필수 항목을 모두 입력해 주세요.");
+                return;
+            }
+
+            if (!privacy) {
+                alert("개인정보 수집 및 이용에 동의해 주세요.");
+                return;
+            }
+
+            const newPost = await window.QnaDB.create({
+                title,
+                name,
+                phone,
+                password,
+                content
+            });
+
+            alert("문의글이 등록되었습니다.");
+            location.href = `contact_view.html?id=${newPost.id}`;
+        });
+    },
+
+    renderView: async function () {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+        const post = await window.QnaDB.getById(id);
+
+        if (!post) {
+            document.getElementById('qna-view-title').innerText = "존재하지 않는 문의글입니다.";
+            document.getElementById('qna-view-name').innerText = "-";
+            document.getElementById('qna-view-date').innerText = "-";
+            document.getElementById('qna-view-status').innerText = "-";
+            document.getElementById('qna-view-content').innerText = "삭제되었거나 잘못된 주소입니다.";
+            document.getElementById('qna-view-reply').innerText = "-";
+            return;
+        }
+
+        document.getElementById('qna-view-title').innerText = post.title;
+        document.getElementById('qna-view-name').innerText = post.name;
+        document.getElementById('qna-view-date').innerText = post.date;
+        document.getElementById('qna-view-status').innerText = post.status;
+        document.getElementById('qna-view-content').innerText = post.content;
+
+        const replyBox = document.getElementById('qna-view-reply');
+
+        if (post.reply) {
+            replyBox.innerText = `${post.reply.content}\n\n답변일: ${post.reply.date}`;
+        } else {
+            replyBox.innerText = "아직 답변이 등록되지 않았습니다.";
+        }
+
+        const deleteBtn = document.getElementById('qna-delete-btn');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', () => {
+                this.deleteByPassword(post.id);
+            });
+        }
+    },
+
+    deleteByPassword: async function (id) {
+        const post = await window.QnaDB.getById(id);
+        if (!post) return;
+
+        const inputPassword = prompt("글 작성 시 입력한 비밀번호를 입력해주세요.");
+        if (inputPassword === null) return;
+
+        if (inputPassword !== post.password) {
+            alert("비밀번호가 일치하지 않습니다.");
+            return;
+        }
+
+        if (!confirm("문의글을 삭제하시겠습니까?")) return;
+
+        await window.QnaDB.delete(id);
+        alert("삭제되었습니다.");
+        location.href = "contact.html";
+    },
+
+    renderAdminList: async function (target) {
+        const posts = await window.QnaDB.getAll();
+        const sorted = this.sortPosts(posts);
+
+        if (sorted.length === 0) {
+            target.innerHTML = `
+                <tr>
+                    <td colspan="6">등록된 문의글이 없습니다.</td>
+                </tr>
+            `;
+            return;
+        }
+
+        target.innerHTML = sorted.map((post, index) => `
+            <tr>
+                <td>${sorted.length - index}</td>
+                <td>
+                    <span style="font-weight:bold; color:${post.status === '답변완료' ? 'var(--primary)' : '#e74c3c'};">
+                        ${this.escapeHtml(post.status)}
+                    </span>
+                </td>
+                <td class="title">
+                    <button type="button"
+                        onclick="window.QnaManager.showAdminDetail(${post.id})"
+                        style="background:none; border:none; cursor:pointer; font-size:14px; color:var(--text);">
+                        ${this.escapeHtml(post.title)}
+                    </button>
+                </td>
+                <td>${this.escapeHtml(post.name)}</td>
+                <td>${this.escapeHtml(post.date)}</td>
+                <td>
+                    <button type="button"
+                        onclick="window.QnaManager.deleteAdminPost(${post.id})"
+                        style="padding:6px 12px; border:1px solid #e74c3c; background:#fff; color:#e74c3c; border-radius:5px; cursor:pointer;">
+                        삭제
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    },
+
+    showAdminDetail: async function (id) {
+        const post = await window.QnaDB.getById(id);
+        const detailBox = document.getElementById('qna-admin-detail');
+
+        if (!post || !detailBox) return;
+
+        detailBox.style.display = 'block';
+        detailBox.innerHTML = `
+            <h3 style="font-size:1.4rem; margin-bottom:10px; color:var(--primary-dark);">
+                ${this.escapeHtml(post.title)}
+            </h3>
+
+            <p style="color:#999; border-bottom:1px solid #eee; padding-bottom:15px; margin-bottom:25px;">
+                작성자: ${this.escapeHtml(post.name)} |
+                연락처: ${this.escapeHtml(post.phone)} |
+                작성일: ${this.escapeHtml(post.date)} |
+                상태: <strong>${this.escapeHtml(post.status)}</strong>
+            </p>
+
+            <div style="white-space:pre-wrap; line-height:2; padding:25px; background:#f9f9f9; border-radius:10px; margin-bottom:25px;">
+                ${this.escapeHtml(post.content)}
+            </div>
+
+            <h4 style="margin-bottom:10px; color:var(--primary-dark);">관리자 답변</h4>
+
+            <textarea id="qna-reply-content" rows="8"
+                style="width:100%; padding:14px; border:1px solid #ddd; border-radius:6px; resize:vertical; line-height:1.7;">${post.reply ? this.escapeHtml(post.reply.content) : ''}</textarea>
+
+            <div style="display:flex; gap:10px; justify-content:center; margin-top:20px;">
+                <button type="button" class="btn btn-primary"
+                    onclick="window.QnaManager.saveAdminReply(${post.id})">
+                    답변 저장
+                </button>
+
+                <a href="contact_view.html?id=${post.id}" class="btn btn-outline">
+                    사용자 화면 보기
+                </a>
+            </div>
+        `;
+
+        detailBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    },
+
+    saveAdminReply: async function (id) {
+        const replyContent = document.getElementById('qna-reply-content').value.trim();
+
+        if (!replyContent) {
+            alert("답변 내용을 입력해 주세요.");
+            return;
+        }
+
+        await window.QnaDB.saveReply(id, replyContent);
+        alert("답변이 저장되었습니다.");
+        location.reload();
+    },
+
+    deleteAdminPost: async function (id) {
+        if (!confirm("관리자 권한으로 이 문의글을 삭제하시겠습니까?")) return;
+
+        await window.QnaDB.delete(id);
+        alert("삭제되었습니다.");
+        location.reload();
+    }
+};
+
+
+/* ==========================================
+   Q&A 초기 실행
+   ========================================== */
+document.addEventListener('DOMContentLoaded', function () {
+    if (window.QnaManager) {
+        window.QnaManager.init();
+    }
+});
+
+/* ==========================================
+   FAQ 저장소
+   현재: localStorage
+   나중에 DB 연결 시 FaqDB만 교체
+   ========================================== */
+window.FaqDB = {
+    storageKey: 'camping_faqs',
+
+    defaultData: [],
+
+    async getAll() {
+        const savedData = localStorage.getItem(this.storageKey);
+
+        if (!savedData) {
+            localStorage.setItem(this.storageKey, JSON.stringify(this.defaultData));
+            return this.defaultData;
+        }
+
+        return JSON.parse(savedData);
+    },
+
+    async create(faqData) {
+        const faqs = await this.getAll();
+
+        const nextId = faqs.length > 0
+            ? Math.max(...faqs.map(faq => faq.id)) + 1
+            : 1;
+
+        const newFaq = {
+            id: nextId,
+            question: faqData.question,
+            answer: faqData.answer,
+            createdAt: Date.now()
+        };
+
+        faqs.push(newFaq);
+        localStorage.setItem(this.storageKey, JSON.stringify(faqs));
+
+        return newFaq;
+    },
+
+    async delete(id) {
+        const faqs = await this.getAll();
+        const filteredFaqs = faqs.filter(faq => faq.id !== Number(id));
+
+        localStorage.setItem(this.storageKey, JSON.stringify(filteredFaqs));
+        return true;
+    }
+};
+
+
+/* ==========================================
+   FAQ 화면 관리자
+   ========================================== */
+window.FaqManager = {
+    init: async function () {
+        const faqList = document.getElementById('faq-list');
+        const faqForm = document.getElementById('faq-admin-form');
+        const faqAdminList = document.getElementById('faq-admin-list');
+
+        if (faqList) await this.renderFaqList(faqList);
+        if (faqForm) this.bindFaqForm(faqForm);
+        if (faqAdminList) await this.renderAdminList(faqAdminList);
+    },
+
+    escapeHtml: function (text) {
+        return String(text || '')
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
+    },
+
+    renderFaqList: async function (target) {
+        const faqs = await window.FaqDB.getAll();
+
+        target.innerHTML = faqs.map(faq => `
+            <div style="margin-bottom:15px; border:1px solid #eee; border-radius:8px; background:#fff; padding:20px;">
+                <h4 style="color:var(--primary);">Q. ${this.escapeHtml(faq.question)}</h4>
+                <p style="margin-top:10px; color:var(--text-light); font-size:14px; white-space:pre-wrap;">
+                    A. ${this.escapeHtml(faq.answer)}
+                </p>
+            </div>
+        `).join('');
+    },
+
+    bindFaqForm: function (form) {
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const question = document.getElementById('faq-question').value.trim();
+            const answer = document.getElementById('faq-answer').value.trim();
+
+            if (!question || !answer) {
+                alert('질문과 답변을 모두 입력해 주세요.');
+                return;
+            }
+
+            await window.FaqDB.create({ question, answer });
+
+            alert('FAQ가 등록되었습니다.');
+            location.reload();
+        });
+    },
+
+    renderAdminList: async function (target) {
+        const faqs = await window.FaqDB.getAll();
+
+        target.innerHTML = faqs.map((faq, index) => `
+            <tr>
+                <td>${index + 1}</td>
+                <td class="title">${this.escapeHtml(faq.question)}</td>
+                <td>
+                    <button type="button"
+                        onclick="window.FaqManager.deleteFaq(${faq.id})"
+                        style="padding:6px 12px; border:1px solid #e74c3c; background:#fff; color:#e74c3c; border-radius:5px; cursor:pointer;">
+                        삭제
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    },
+
+    deleteFaq: async function (id) {
+        if (!confirm('이 FAQ를 삭제하시겠습니까?')) return;
+
+        await window.FaqDB.delete(id);
+        alert('삭제되었습니다.');
+        location.reload();
+    }
+};
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    if (window.FaqManager) {
+        window.FaqManager.init();
+    }
+});
