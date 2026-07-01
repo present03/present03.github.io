@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>자주 묻는 질문 | 월촌캠핑장</title>
+    <title>문의하기 | 월촌캠핑장</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -66,25 +66,49 @@
     background-size: cover; 
     background-position: 50% 63%;">
         <div class="wrap">
-            <h2>자주 묻는 질문</h2>
-            <p>자주 물으시는 질문과 답변을 안내드립니다.</p>
+            <h2>문의하기</h2>
+            <p>월촌캠핑장에 대한 문의사항을 남겨주세요.</p>
         </div>
     </section>
 
     <div class="breadcrumb">
         <div class="wrap">
-            <a href="index.html">HOME</a> <span>&gt;</span> 커뮤니티 <span>&gt;</span> <strong>자주 묻는 질문</strong>
+            <a href="index.html">HOME</a> <span>&gt;</span> 커뮤니티 <span>&gt;</span> <strong>문의하기</strong>
         </div>
     </div>
 
     <main class="section">
         <div class="wrap">
-            <div class="section-title">
-                <h2>FAQ</h2>
-                <div class="line"></div>
-            </div>
+            <div
+                style="max-width:850px; margin:0 auto; padding:40px; background:#fff; border:1px solid #eee; border-radius:12px;">
+                <h2 id="qna-view-title" style="font-size:1.8rem; margin-bottom:10px; color:var(--primary-dark);">
+                    제목을 불러오는 중...
+                </h2>
 
-            <div class="faq-list" id="faq-list"></div>
+                <p style="color:#999; border-bottom:1px solid #eee; padding-bottom:15px; margin-bottom:30px;">
+                    작성자: <span id="qna-view-name">-</span> |
+                    작성일: <span id="qna-view-date">-</span> |
+                    상태: <strong id="qna-view-status">-</strong>
+                </p>
+
+                <div id="qna-view-content"
+                    style="line-height:2; white-space:pre-wrap; min-height:180px; font-size:1.05rem; color:var(--text);">
+                    내용을 불러오는 중입니다...
+                </div>
+
+                <div style="margin-top:40px; padding:30px; background:#f9f9f9; border-radius:10px;">
+                    <h3 style="color:var(--primary-dark); margin-bottom:15px;">관리자 답변</h3>
+                    <div id="qna-view-reply" style="white-space:pre-wrap; line-height:2; color:var(--text-light);">
+                        답변을 불러오는 중입니다...
+                    </div>
+                </div>
+
+                <div
+                    style="display:flex; justify-content:center; gap:10px; margin-top:40px; border-top:1px solid #eee; padding-top:30px;">
+                    <a href="contact.html" class="btn btn-primary">목록으로</a>
+                    <button type="button" class="btn btn-outline" id="qna-delete-btn">삭제하기</button>
+                </div>
+            </div>
         </div>
     </main>
 
