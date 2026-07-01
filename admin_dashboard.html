@@ -6,202 +6,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>관리자 메인 | 월촌캠핑장</title>
     <link rel="stylesheet" href="css/style.css">
-
-    <style>
-        body {
-            background: #f4f6f3;
-        }
-
-        .admin-layout {
-            min-height: 100vh;
-            display: flex;
-        }
-
-        .admin-sidebar {
-            width: 250px;
-            background: var(--primary-dark);
-            color: #fff;
-            padding: 30px 22px;
-        }
-
-        .admin-logo {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 35px;
-        }
-
-        .admin-logo span {
-            color: var(--accent);
-        }
-
-        .admin-menu a {
-            display: block;
-            padding: 13px 15px;
-            margin-bottom: 8px;
-            border-radius: 8px;
-            color: rgba(255, 255, 255, 0.85);
-            transition: 0.2s;
-        }
-
-        .admin-menu a:hover,
-        .admin-menu a.active {
-            background: rgba(255, 255, 255, 0.13);
-            color: #fff;
-        }
-
-        .admin-main {
-            flex: 1;
-            padding: 40px;
-        }
-
-        .admin-header {
-            margin-bottom: 30px;
-        }
-
-        .admin-header h1 {
-            color: var(--primary-dark);
-            font-size: 30px;
-            margin-bottom: 8px;
-        }
-
-        .admin-header p {
-            color: var(--text-light);
-        }
-
-        .admin-card-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-            margin-bottom: 35px;
-        }
-
-        .admin-card {
-            background: #fff;
-            border: 1px solid #eee;
-            border-radius: 14px;
-            padding: 25px;
-        }
-
-        .admin-card h3 {
-            color: var(--text-light);
-            font-size: 15px;
-            margin-bottom: 12px;
-        }
-
-        .admin-card .count {
-            font-size: 34px;
-            font-weight: 800;
-            color: var(--primary);
-        }
-
-        .admin-section {
-            background: #fff;
-            border: 1px solid #eee;
-            border-radius: 14px;
-            padding: 30px;
-        }
-
-        .admin-section h2 {
-            color: var(--primary-dark);
-            margin-bottom: 20px;
-        }
-
-        .admin-link-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
-
-        .admin-link-card {
-            display: block;
-            padding: 24px;
-            border: 1px solid #eee;
-            border-radius: 12px;
-            background: #fafafa;
-            transition: 0.2s;
-        }
-
-        .admin-link-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--primary);
-            background: #fff;
-        }
-
-        .admin-link-card strong {
-            display: block;
-            font-size: 18px;
-            color: var(--primary-dark);
-            margin-bottom: 8px;
-        }
-
-        .admin-link-card span {
-            color: var(--text-light);
-            font-size: 14px;
-        }
-
-        @media (max-width: 900px) {
-            .admin-layout {
-                display: block;
-            }
-
-            .admin-sidebar {
-                width: 100%;
-            }
-
-            .admin-card-grid,
-            .admin-link-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .admin-main {
-                padding: 25px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="css/admin.css">
 </head>
 
 <body>
     <div class="admin-layout">
-        <aside class="admin-sidebar">
-            <div class="admin-logo">🏕️ 월촌<span>관리자</span></div>
-
-            <nav class="admin-menu">
-                <a href="admin_dashboard.html" class="active">관리자 메인</a>
-                <a href="admin_notice.html">공지사항 관리</a>
-                <a href="admin_qna.html">문의/Q&A 관리</a>
-                <a href="admin_faq.html">FAQ 관리</a>
-                <a href="index.html">홈페이지 보기</a>
-                <a href="#" onclick="window.AdminAuth.logout(); return false;">로그아웃</a>
-            </nav>
-        </aside>
+        <aside class="admin-sidebar" id="admin-sidebar"></aside>
 
         <main class="admin-main">
             <div class="admin-header">
                 <h1>관리자 메인</h1>
-                <p>월촌캠핑장 홈페이지의 공지사항, 문의글, FAQ를 관리합니다.</p>
+                <p>월촌캠핑장 홈페이지의 예약, 공지사항, 문의글, FAQ를 관리합니다.</p>
             </div>
 
-            <section class="admin-card-grid">
+            <section class="admin-card-grid dashboard-card-grid">
                 <div class="admin-card">
-                    <h3>공지사항</h3>
-                    <div class="count" id="notice-count">0</div>
+                    <h3>전체 예약</h3>
+                    <div class="count" id="reservation-total-count">0</div>
+                </div>
+
+                <div class="admin-card">
+                    <h3>결제대기</h3>
+                    <div class="count" id="reservation-waiting-count">0</div>
+                </div>
+
+                <div class="admin-card">
+                    <h3>예약완료</h3>
+                    <div class="count" id="reservation-complete-count">0</div>
                 </div>
 
                 <div class="admin-card">
                     <h3>문의글</h3>
                     <div class="count" id="qna-count">0</div>
                 </div>
-
-                <div class="admin-card">
-                    <h3>FAQ</h3>
-                    <div class="count" id="faq-count">0</div>
-                </div>
             </section>
 
-            <section class="admin-section">
+            <section class="admin-panel">
                 <h2>관리 메뉴</h2>
 
-                <div class="admin-link-grid">
+                <div class="admin-link-grid dashboard-link-grid">
+                    <a href="admin_reservation.html" class="admin-link-card">
+                        <strong>예약 관리</strong>
+                        <span>예약 확인, 결제대기/예약완료 상태 관리</span>
+                    </a>
+
                     <a href="admin_notice.html" class="admin-link-card">
                         <strong>공지사항 관리</strong>
                         <span>공지 등록, 삭제, 필독 공지 설정</span>
@@ -218,6 +66,50 @@
                     </a>
                 </div>
             </section>
+
+            <section class="admin-panel">
+                <div class="admin-panel-title-row">
+                    <h2>최근 예약</h2>
+                    <a href="admin_reservation.html" class="btn btn-outline">예약 전체 보기</a>
+                </div>
+
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th style="width:90px;">상태</th>
+                                <th style="width:120px;">예약자</th>
+                                <th style="width:140px;">연락처</th>
+                                <th>날짜</th>
+                                <th style="width:90px;">구역</th>
+                                <th style="width:110px;">금액</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-reservation-list"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="admin-panel">
+                <h2>콘텐츠 현황</h2>
+
+                <div class="admin-card-grid dashboard-small-grid">
+                    <div class="admin-card">
+                        <h3>공지사항</h3>
+                        <div class="count small" id="notice-count">0</div>
+                    </div>
+
+                    <div class="admin-card">
+                        <h3>FAQ</h3>
+                        <div class="count small" id="faq-count">0</div>
+                    </div>
+
+                    <div class="admin-card">
+                        <h3>전체 문의글</h3>
+                        <div class="count small" id="qna-total-count">0</div>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
 
@@ -225,12 +117,67 @@
         const notices = JSON.parse(localStorage.getItem('camping_notices')) || [];
         const qnaPosts = JSON.parse(localStorage.getItem('camping_qna_posts')) || [];
         const faqs = JSON.parse(localStorage.getItem('camping_faqs')) || [];
+        const reservations = JSON.parse(localStorage.getItem('total_reservations')) || [];
+
+        const waitingReservations = reservations.filter(item => item.status === '결제대기');
+        const completeReservations = reservations.filter(item => item.status === '예약완료');
+
+        document.getElementById('reservation-total-count').innerText = reservations.length;
+        document.getElementById('reservation-waiting-count').innerText = waitingReservations.length;
+        document.getElementById('reservation-complete-count').innerText = completeReservations.length;
 
         document.getElementById('notice-count').innerText = notices.length;
         document.getElementById('qna-count').innerText = qnaPosts.length;
+        document.getElementById('qna-total-count').innerText = qnaPosts.length;
         document.getElementById('faq-count').innerText = faqs.length;
+
+        function escapeHtml(text) {
+            return String(text || '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#039;');
+        }
+
+        function getStatusClass(status) {
+            if (status === '예약완료') return 'complete';
+            if (status === '취소됨' || status === '자동취소') return 'cancel';
+            return 'waiting';
+        }
+
+        const recentList = document.getElementById('recent-reservation-list');
+
+        const recentReservations = [...reservations]
+            .sort((a, b) => Number(b.bookedAt || 0) - Number(a.bookedAt || 0))
+            .slice(0, 5);
+
+        if (recentReservations.length === 0) {
+            recentList.innerHTML = `
+                <tr>
+                    <td colspan="6">최근 예약 내역이 없습니다.</td>
+                </tr>
+            `;
+        } else {
+            recentList.innerHTML = recentReservations.map(reservation => `
+                <tr>
+                    <td>
+                        <span class="admin-status ${getStatusClass(reservation.status)}">
+                            ${escapeHtml(reservation.status || '결제대기')}
+                        </span>
+                    </td>
+                    <td>${escapeHtml(reservation.name)}</td>
+                    <td>${escapeHtml(reservation.phone)}</td>
+                    <td class="left">${escapeHtml(reservation.date)}</td>
+                    <td>${escapeHtml(reservation.site)}</td>
+                    <td>${escapeHtml(reservation.price)}</td>
+                </tr>
+            `).join('');
+        }
     </script>
+
     <script src="js/admin-auth.js"></script>
+    <script src="js/admin-layout.js"></script>
 </body>
 
 </html>
