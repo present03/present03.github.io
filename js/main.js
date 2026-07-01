@@ -394,89 +394,238 @@ document.addEventListener('DOMContentLoaded', function () {
 
     CampingUI.init();
     ResManager.init();
-    NoticeManager.init();
+    window.NoticeManager.init();
 });
 
-/* --- main.js : NoticeManager 부분 업데이트 --- */
-window.NoticeManager = {
+/* ==========================================
+   공지사항 저장소
+   - 현재: localStorage 사용
+   - 나중에 서버/DB 연결 시 이 객체만 교체하면 됨
+   ========================================== */
+window.NoticeDB = {
+    storageKey: 'camping_notices',
+
     defaultData: [
-        { id: 101, isFixed: true, title: "월촌캠핑장 이용 전 필독사항 안내", date: "2026.03.31", content: "매너타임 준수 부탁드립니다." },
-        { id: 1, isFixed: false, title: "4월 주말 예약 조기 마감 안내", date: "2026.03.28", content: "평일 예약은 가능합니다." }
+        {
+            id: 101,
+            isFixed: true,
+            title: "월촌캠핑장 이용 전 필독사항 안내",
+            date: "2026.03.31",
+            author: "관리자",
+            content: "매너타임 준수 부탁드립니다."
+        },
+        {
+            id: 1,
+            isFixed: false,
+            title: "4월 주말 예약 조기 마감 안내",
+            date: "2026.03.28",
+            author: "관리자",
+            content: "평일 예약은 가능합니다."
+        }
     ],
 
-    init: function () {
-        if (!localStorage.getItem('camping_notices')) {
-            localStorage.setItem('camping_notices', JSON.stringify(this.defaultData));
+    // 공지 목록 불러오기
+    async getAll() {
+        const savedData = localStorage.getItem(this.storageKey);
+
+        if (!savedData) {
+            localStorage.setItem(this.storageKey, JSON.stringify(this.defaultData));
+            return this.defaultData;
         }
 
-        // 1. 공지사항 페이지 목록 렌더링
-        const body = document.getElementById('notice-list-body');
-        if (body) this.renderList(body);
-
-        // 2. 메인 페이지 공지사항 목록 렌더링 (추가)
-        const mainList = document.getElementById('main-notice-list');
-        if (mainList) this.renderMainList(mainList);
-
-        if (document.getElementById('notice-view-content')) {
-            this.renderView();
-        }
+        return JSON.parse(savedData);
     },
 
-    // 메인 페이지용 상단 5개 렌더링 함수
-    renderMainList: function (target) {
-        const notices = JSON.parse(localStorage.getItem('camping_notices')) || [];
-        
-        // 정렬: 필독(isFixed) 우선 -> 그 다음 ID 내림차순 (최신순)
-        const sorted = notices.sort((a, b) => (b.isFixed - a.isFixed) || (b.id - a.id));
-        
-        // 상단 5개만 추출
-        const mainDisplay = sorted.slice(0, 5);
+    // 특정 공지 하나 불러오기
+    async getById(id) {
+        const notices = await this.getAll();
+        return notices.find(notice => notice.id === Number(id));
+    },
 
-        target.innerHTML = mainDisplay.map(n => `
+    // 새 공지 저장
+    async create(noticeData) {
+        const notices = await this.getAll();
+
+        const nextId = notices.length > 0
+            ? Math.max(...notices.map(notice => notice.id)) + 1
+            : 1;
+
+        const today = new Date().toISOString().slice(0, 10).replace(/-/g, '.');
+
+        const newNotice = {
+            id: nextId,
+            title: noticeData.title,
+            content: noticeData.content,
+            author: noticeData.author || "관리자",
+            date: noticeData.date || today,
+            isFixed: Boolean(noticeData.isFixed),
+            createdAt: Date.now()
+        };
+
+        notices.push(newNotice);
+        localStorage.setItem(this.storageKey, JSON.stringify(notices));
+
+        return newNotice;
+    },
+
+    // 공지 삭제
+    async delete(id) {
+        const notices = await this.getAll();
+        const filteredNotices = notices.filter(notice => notice.id !== Number(id));
+
+        localStorage.setItem(this.storageKey, JSON.stringify(filteredNotices));
+
+        return true;
+    }
+};
+
+
+/* ==========================================
+   공지사항 화면 관리자
+   ========================================== */
+window.NoticeManager = {
+    init: async function () {
+        const noticeListBody = document.getElementById('notice-list-body');
+        const mainNoticeList = document.getElementById('main-notice-list');
+        const viewTitle = document.getElementById('view-title');
+        const adminForm = document.getElementById('admin-notice-form');
+        const adminListBody = document.getElementById('admin-notice-list');
+
+        if (noticeListBody) await this.renderList(noticeListBody);
+        if (mainNoticeList) await this.renderMainList(mainNoticeList);
+        if (viewTitle) await this.renderView();
+        if (adminForm) this.bindAdminForm(adminForm);
+        if (adminListBody) await this.renderAdminList(adminListBody);
+    },
+
+    // 필독 우선, 그다음 최신순 정렬
+    sortNotices: function (notices) {
+        return [...notices].sort((a, b) => {
+            if (b.isFixed !== a.isFixed) return b.isFixed - a.isFixed;
+            return b.id - a.id;
+        });
+    },
+
+    // HTML 깨짐/삽입 방지용
+    escapeHtml: function (text) {
+        return String(text)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
+    },
+
+    // notice.html 목록 출력
+    renderList: async function (target) {
+        const notices = await window.NoticeDB.getAll();
+        const sorted = this.sortNotices(notices);
+
+        target.innerHTML = sorted.map((notice, index) => `
+            <tr style="${notice.isFixed ? 'background-color:#fffdf5;' : ''}">
+                <td>${notice.isFixed ? '<strong>필독</strong>' : sorted.length - index}</td>
+                <td class="title">
+                    <a href="notice_view.html?id=${notice.id}" style="${notice.isFixed ? 'font-weight:bold;' : ''}">
+                        ${this.escapeHtml(notice.title)}
+                    </a>
+                </td>
+                <td>${this.escapeHtml(notice.author || '관리자')}</td>
+                <td>${this.escapeHtml(notice.date)}</td>
+            </tr>
+        `).join('');
+    },
+
+    // index.html 메인 공지 일부 출력
+    renderMainList: async function (target) {
+        const notices = await window.NoticeDB.getAll();
+        const sorted = this.sortNotices(notices).slice(0, 5);
+
+        target.innerHTML = sorted.map(notice => `
             <li>
-                <a href="notice_view.html?id=${n.id}">
+                <a href="notice_view.html?id=${notice.id}">
                     <span>
-                        ${n.isFixed ? '<span class="badge">필독</span>' : ''}
-                        ${n.title}
+                        ${notice.isFixed ? '<span class="badge">필독</span>' : ''}
+                        ${this.escapeHtml(notice.title)}
                     </span>
-                    <span class="date">${n.date.replace(/-/g, '.')}</span>
+                    <span class="date">${this.escapeHtml(notice.date)}</span>
                 </a>
             </li>
         `).join('');
     },
 
-    // 기존 리스트 렌더링 (notice.html용)
-    renderList: function (target) {
-        const notices = JSON.parse(localStorage.getItem('camping_notices')) || [];
-        const sorted = notices.sort((a, b) => (b.isFixed - a.isFixed) || (b.id - a.id));
+    // notice_view.html 상세 출력
+    renderView: async function () {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
 
-        target.innerHTML = sorted.map((n, idx) => `
-            <tr style="${n.isFixed ? 'background-color: #fffdf5;' : ''}">
-                <td>${n.isFixed ? '<strong>필독</strong>' : sorted.length - idx}</td>
-                <td class="title">
-                    <a href="notice_view.html?id=${n.id}" style="${n.isFixed ? 'font-weight:bold;' : ''}">
-                        ${n.title}
-                    </a>
+        const notice = await window.NoticeDB.getById(id);
+
+        if (!notice) {
+            document.getElementById('view-title').innerText = "존재하지 않는 공지입니다.";
+            document.getElementById('view-date').innerText = "-";
+            document.getElementById('view-content').innerText = "삭제되었거나 잘못된 주소입니다.";
+            return;
+        }
+
+        document.getElementById('view-title').innerText = notice.title;
+        document.getElementById('view-date').innerText = notice.date;
+        document.getElementById('view-content').innerText = notice.content;
+    },
+
+    // 관리자 글쓰기 폼 연결
+    bindAdminForm: function (form) {
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const title = document.getElementById('notice-title').value.trim();
+            const content = document.getElementById('notice-content').value.trim();
+            const isFixed = document.getElementById('notice-fixed').checked;
+
+            if (!title || !content) {
+                alert("제목과 내용을 모두 입력해 주세요.");
+                return;
+            }
+
+            const newNotice = await window.NoticeDB.create({
+                title,
+                content,
+                isFixed,
+                author: "관리자"
+            });
+
+            alert("공지사항이 등록되었습니다.");
+            location.href = `notice_view.html?id=${newNotice.id}`;
+        });
+    },
+
+    // 관리자 페이지 목록 출력
+    renderAdminList: async function (target) {
+        const notices = await window.NoticeDB.getAll();
+        const sorted = this.sortNotices(notices);
+
+        target.innerHTML = sorted.map(notice => `
+            <tr>
+                <td>${notice.isFixed ? '<strong>필독</strong>' : notice.id}</td>
+                <td class="title">${this.escapeHtml(notice.title)}</td>
+                <td>${this.escapeHtml(notice.date)}</td>
+                <td>
+                    <button 
+                        type="button" 
+                        onclick="window.NoticeManager.deleteNotice(${notice.id})"
+                        style="padding:6px 12px; border:1px solid #e74c3c; background:#fff; color:#e74c3c; border-radius:5px; cursor:pointer;">
+                        삭제
+                    </button>
                 </td>
-                <td>관리자</td>
-                <td>${n.date}</td>
             </tr>
         `).join('');
     },
 
-    renderView: function () {
-        const params = new URLSearchParams(window.location.search);
-        const id = parseInt(params.get('id'));
-        const notices = JSON.parse(localStorage.getItem('camping_notices')) || [];
-        const item = notices.find(x => x.id === id);
+    // 관리자 페이지 삭제 기능
+    deleteNotice: async function (id) {
+        if (!confirm("이 공지사항을 삭제하시겠습니까?")) return;
 
-        if (item) {
-            document.getElementById('view-title').innerText = item.title;
-            document.getElementById('view-date').innerText = item.date;
-            document.getElementById('view-content').innerText = item.content;
-        }
+        await window.NoticeDB.delete(id);
+        alert("삭제되었습니다.");
+        location.reload();
     }
 };
-
-// 기존의 CampingUI.init() 등과 충돌하지 않게 별도 실행
-window.addEventListener('load', () => window.NoticeManager.init());
